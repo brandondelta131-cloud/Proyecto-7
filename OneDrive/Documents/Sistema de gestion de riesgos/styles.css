@@ -614,12 +614,7 @@ a {
   justify-content: space-between;
   gap: 18px;
   flex-wrap: wrap;
-  align-items: flex-start;
-}
-
-.topbar-title {
-  max-width: 640px;
-}
+  align-items: center;
 
 .topbar-title h1 {
   margin: 8px 0 10px;
