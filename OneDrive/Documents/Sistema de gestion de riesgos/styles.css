@@ -925,35 +925,62 @@ a {
 .module-card {
   background: #1e1e1e;
   border: 1px solid #333;
-  border-radius: 10px;
+  border-radius: 18px;
   width: 280px;
   margin: 15px;
-  padding: 20px;
+  padding: 24px;
   text-align: center;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
 }
 
 .module-card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  transform: scale(1.04);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.35);
+  border-color: #0ca8ea;
 }
 
 .module-card h2 {
   margin: 10px 0;
-  color: #0078D7;
+  color: #00b4f0;
 }
 
 .module-card p {
   font-size: 14px;
   color: #ccc;
+  line-height: 1.6;
 }
 
 .icon {
-  font-size: 40px;
+  font-size: 42px;
   margin-bottom: 10px;
 }
 
-/* ===== HERO SECTION ===== */
+.module-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 12px;
+  padding: 12px 18px;
+  border-radius: 999px;
+  background: #0078d7;
+  color: #fff;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  box-shadow: 0 10px 20px rgba(0, 116, 212, 0.18);
+}
+
+.module-button:hover {
+  background: #0ca8ea;
+}
+
+.module-card.sif-card {
+  border-color: rgba(12, 168, 234, 0.45);
+  background: linear-gradient(180deg, rgba(18, 33, 58, 0.95), #141b29);
 .hero-section {
   background-image: linear-gradient(rgba(10, 31, 62, 0.75), rgba(26, 10, 46, 0.85)), url('img.webp');
   background-size: cover;
@@ -1034,7 +1061,7 @@ a {
 .stat-number {
   font-size: 36px;
   font-weight: bold;
-  color: #0078D7;
+  color: #00b4f0;
   margin: 10px 0;
 }
 
@@ -1045,7 +1072,10 @@ a {
   letter-spacing: 1px;
 }
 
-/* ===== MODULES SECTION ===== */
+.stat-note {
+  font-size: 13px;
+  color: #8db7d4;
+  margin-top: 8px;
 .modules-section {
   padding: 40px 30px;
   background: #121212;
