@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sistema Integral de Gestión de Riesgos</title>
   <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="dark-theme">
   <header class="global-header">
@@ -42,23 +43,25 @@
   <div class="hero-section">
     <div class="hero-content">
       <h1>Sistema Integral de Gestión de Riesgos</h1>
-      <p>Una plataforma unificada para gestión de riesgos, seguridad, salud ocupacional y cumplimiento normativo. Monitoriza, analiza y controla todos los aspectos de tu operación en tiempo real.</p>
-    </div>
-    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:18px; margin-top:32px;">
-      <div style="padding:18px; border-radius:18px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08);">
-        <h3 style="margin:0 0 10px; color:#fff;">Definición del Alcance</h3>
-        <p style="margin:0; color:#cfd8ef; line-height:1.6;">Limita el sistema a áreas críticas y procesos prioritarios para una implementación focalizada y efectiva.</p>
-      </div>
-      <div style="padding:18px; border-radius:18px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08);">
-        <h3 style="margin:0 0 10px; color:#fff;">Área Piloto</h3>
-        <p style="margin:0; color:#cfd8ef; line-height:1.6;">Selecciona un área representativa de planta para validar los módulos antes de escalar el sistema completo.</p>
-      </div>
-      <div style="padding:18px; border-radius:18px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08);">
-        <h3 style="margin:0 0 10px; color:#fff;">Revisión Normativa</h3>
-        <p style="margin:0; color:#cfd8ef; line-height:1.6;">Integra normas STPS, ISO y SEMARNAT desde el inicio para que el sistema cumpla con requisitos legales y operacionales.</p>
-      </div>
+      <h2 class="hero-subtitle">Visualiza KPIs críticos y evalúa SIF sin texto excesivo.</h2>
     </div>
   </div>
+
+  <!-- HOME CHARTS PREVIEW -->
+  <section class="charts-preview">
+    <div class="chart-card">
+      <div class="chart-card-title">Incidentes</div>
+      <canvas id="trendChartInicio"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-title">SIF Potencial</div>
+      <canvas id="sifDonutInicio"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-title">Cumplimiento</div>
+      <canvas id="complianceChartInicio"></canvas>
+    </div>
+  </section>
 
   <!-- STATS/KPI SECTION -->
   <div class="stats-container">
@@ -92,49 +95,41 @@
       <a href="analisis.html" class="module-card">
         <div class="icon">⚠️</div>
         <h2>Análisis de Riesgos</h2>
-        <p>Incidentes, casi-accidentes, peligros potenciales y primeros auxilios con simulación AI.</p>
       </a>
 
       <a href="mapa.html" class="module-card">
         <div class="icon">🗺️</div>
-        <h2>Mapa Dinámico Editable</h2>
-        <p>Sube el plano de tu planta, dibuja zonas, conecta el flujo de la celda y visualiza el heat map.</p>
+        <h2>Mapa Dinámico</h2>
       </a>
 
       <a href="auditorias.html" class="module-card">
         <div class="icon">📋</div>
-        <h2>Auditorías ISO</h2>
-        <p>Checklist precargado para ISO 14001, 45001 y 50001 con captura de evidencia.</p>
+        <h2>Auditorías</h2>
       </a>
 
       <a href="cumplimiento.html" class="module-card">
         <div class="icon">📑</div>
         <h2>Cumplimiento NOM</h2>
-        <p>Verificación contra NOM-STPS y SEMARNAT con porcentaje y evidencia documental.</p>
       </a>
 
       <a href="dashboard.html" class="module-card">
         <div class="icon">📊</div>
-        <h2>Dashboard KPIs</h2>
-        <p>Tiempo real con suscripciones a la base de datos, pirámide de Heinrich y tendencias.</p>
+        <h2>Dashboard</h2>
       </a>
 
       <a href="registro.html" class="module-card">
         <div class="icon">📝</div>
-        <h2>Registro de Incidentes</h2>
-        <p>Documentación completa de incidentes con anexos, testigos y análisis de causa raíz.</p>
+        <h2>Registro</h2>
       </a>
 
       <a href="incidentes.html" class="module-card">
         <div class="icon">🚨</div>
-        <h2>Seguimiento de Incidentes</h2>
-        <p>Monitoreo y trazabilidad de incidentes en tiempo real con notificaciones automáticas.</p>
+        <h2>Incidentes</h2>
       </a>
 
       <a href="SIF.html" class="module-card sif-card">
         <div class="icon">🛡️</div>
         <h2>SIF</h2>
-        <p>Accede a la vista SIF para revisar factores críticos, matriz de riesgo y acciones de control.</p>
         <span class="module-button">Ir a SIF</span>
       </a>
     </div>
@@ -161,6 +156,74 @@
           element.textContent = currentValue;
         }
       }, 20);
+    });
+
+    const trendCtxInicio = document.getElementById('trendChartInicio').getContext('2d');
+    new Chart(trendCtxInicio, {
+      type: 'line',
+      data: {
+        labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+        datasets: [{
+          label: 'Incidentes',
+          data: [22, 18, 15, 14, 12, 10],
+          borderColor: '#00b4f0',
+          backgroundColor: 'rgba(0, 180, 240, 0.18)',
+          tension: 0.35,
+          fill: true,
+          pointRadius: 3
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          x: { ticks: { color: '#b7d4f5' }, grid: { display: false } },
+          y: { ticks: { color: '#b7d4f5' }, grid: { color: 'rgba(255,255,255,0.08)' }, beginAtZero: true }
+        }
+      }
+    });
+
+    const sifCtxInicio = document.getElementById('sifDonutInicio').getContext('2d');
+    new Chart(sifCtxInicio, {
+      type: 'doughnut',
+      data: {
+        labels: ['Bajo', 'Medio', 'Alto'],
+        datasets: [{
+          data: [55, 28, 17],
+          backgroundColor: ['#0ca8ea', '#f4a11b', '#f04e44']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom', labels: { color: '#b7d4f5' } }
+        }
+      }
+    });
+
+    const complianceCtxInicio = document.getElementById('complianceChartInicio').getContext('2d');
+    new Chart(complianceCtxInicio, {
+      type: 'bar',
+      data: {
+        labels: ['ISO', 'NOM', 'STPS'],
+        datasets: [{
+          label: 'Cumplimiento',
+          data: [92, 88, 95],
+          backgroundColor: ['#00b4f0', '#4bc076', '#f4a11b']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          x: { ticks: { color: '#b7d4f5' }, grid: { display: false } },
+          y: { ticks: { color: '#b7d4f5' }, grid: { color: 'rgba(255,255,255,0.08)' }, beginAtZero: true, max: 100 }
+        }
+      }
     });
   </script>
 </body>
