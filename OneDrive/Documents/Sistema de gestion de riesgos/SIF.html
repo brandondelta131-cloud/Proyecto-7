@@ -261,10 +261,22 @@
       options: {
         responsive: true,
         scales: {
-          x: { grid: { display: false }, ticks: { color: '#9aa5c5' } },
-          y: { grid: { color: 'rgba(255,255,255,0.08)' }, ticks: { color: '#9aa5c5' }, beginAtZero: true }
+          x: {
+            grid: { display: false },
+            ticks: { color: '#9aa5c5' },
+            title: { display: true, text: 'Mes', color: '#9aa5c5', font: { size: 13 } }
+          },
+          y: {
+            grid: { color: 'rgba(255,255,255,0.08)' },
+            ticks: { color: '#9aa5c5' },
+            beginAtZero: true,
+            title: { display: true, text: 'Eventos', color: '#9aa5c5', font: { size: 13 } }
+          }
         },
-        plugins: { legend: { labels: { color: '#9aa5c5' } } }
+        plugins: {
+          legend: { labels: { color: '#9aa5c5' } },
+          title: { display: true, text: 'Tendencia SIF por mes', color: '#fff', font: { size: 18 } }
+        }
       }
     });
 
@@ -272,7 +284,7 @@
     new Chart(energyCtx, {
       type: 'doughnut',
       data: {
-        labels: ['Electrical', 'Gravity', 'Mechanical', 'Chemical', 'Pressure', 'Thermal', 'Other'],
+        labels: ['Eléctrico', 'Gravedad', 'Mecánico', 'Químico', 'Presión', 'Térmico', 'Otro'],
         datasets: [{
           data: [33.3, 22.2, 16.7, 11.1, 5.6, 5.6, 5.6],
           backgroundColor: ['#0ca8ea', '#f04e44', '#c93b58', '#f4a11b', '#4bc076', '#7c5cf8', '#6fc6a8']
@@ -280,7 +292,10 @@
       },
       options: {
         responsive: true,
-        plugins: { legend: { position: 'bottom', labels: { color: '#9aa5c5' } } }
+        plugins: {
+          legend: { position: 'right', labels: { color: '#9aa5c5' } },
+          title: { display: true, text: 'Incidentes por tipo de energía', color: '#fff', font: { size: 16 } }
+        }
       }
     });
 
@@ -288,9 +303,9 @@
     new Chart(rootCauseCtx, {
       type: 'bar',
       data: {
-        labels: ['Procedure Not Followed', 'Inadequate Training', 'Equipment Failure', 'Poor Supervision', 'Complacency', 'Other'],
+        labels: ['Procedimiento no seguido', 'Capacitación insuficiente', 'Fallo de equipo', 'Supervisión pobre', 'Complacencia', 'Otro'],
         datasets: [{
-          label: 'Occurrences',
+          label: 'Ocurrencias',
           data: [16, 12, 8, 6, 4, 3],
           backgroundColor: '#0ca8ea'
         }]
@@ -299,10 +314,21 @@
         responsive: true,
         indexAxis: 'y',
         scales: {
-          x: { grid: { color: 'rgba(255,255,255,0.08)' }, ticks: { color: '#9aa5c5' }, beginAtZero: true },
-          y: { ticks: { color: '#9aa5c5' } }
+          x: {
+            grid: { color: 'rgba(255,255,255,0.08)' },
+            ticks: { color: '#9aa5c5' },
+            beginAtZero: true,
+            title: { display: true, text: 'Ocurrencias', color: '#9aa5c5', font: { size: 13 } }
+          },
+          y: {
+            ticks: { color: '#9aa5c5' },
+            title: { display: true, text: 'Causa raíz', color: '#9aa5c5', font: { size: 13 } }
+          }
         },
-        plugins: { legend: { display: false } }
+        plugins: {
+          legend: { display: false },
+          title: { display: true, text: 'Causa raíz - Pareto de incidentes', color: '#fff', font: { size: 16 } }
+        }
       }
     });
   </script>

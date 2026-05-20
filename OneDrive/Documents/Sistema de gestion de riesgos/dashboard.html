@@ -42,7 +42,8 @@
       margin-top: 10px;
     }
     .chart-container {
-      width: 45%;
+      width: 100%;
+      max-width: 720px;
       margin: 20px;
       background: #1e1e1e;
       border: 1px solid #333;
@@ -287,18 +288,19 @@
             responsive: true,
             plugins: {
               legend: { display: false },
+              title: { display: true, text: 'Registros por categoría', color: '#fff', font: { size: 16 } },
               tooltip: { callbacks: { label: ctx => `${ctx.parsed.y} registros` } }
             },
             scales: {
-              x: { ticks: { color: '#fff' }, grid: { color: '#333' } },
-              y: { ticks: { color: '#fff' }, grid: { color: '#333' }, beginAtZero: true }
+              x: { ticks: { color: '#fff' }, grid: { color: '#333' }, title: { display: true, text: 'Tipo de registro', color: '#fff', font: { size: 13 } } },
+              y: { ticks: { color: '#fff' }, grid: { color: '#333' }, beginAtZero: true, title: { display: true, text: 'Cantidad', color: '#fff', font: { size: 13 } } }
             }
           }
         });
 
         const ctx2 = document.getElementById('heineChart').getContext('2d');
         window.heineChart = new Chart(ctx2, {
-          type: 'horizontalBar',
+          type: 'bar',
           data: {
             labels: ['Primeros auxilios', 'Accidente', 'Casi-accidente', 'Peligro potencial'],
             datasets: [{
@@ -310,10 +312,13 @@
           options: {
             responsive: true,
             indexAxis: 'y',
-            plugins: { legend: { display: false } },
+            plugins: {
+              legend: { display: false },
+              title: { display: true, text: 'Pirámide de Heinrich', color: '#fff', font: { size: 16 } }
+            },
             scales: {
-              x: { ticks: { color: '#fff' }, grid: { color: '#333' } },
-              y: { ticks: { color: '#fff' }, grid: { color: '#333' } }
+              x: { ticks: { color: '#fff' }, grid: { color: '#333' }, title: { display: true, text: 'Registros', color: '#fff', font: { size: 13 } } },
+              y: { ticks: { color: '#fff' }, grid: { color: '#333' }, title: { display: true, text: 'Tipo de evento', color: '#fff', font: { size: 13 } } }
             }
           }
         });

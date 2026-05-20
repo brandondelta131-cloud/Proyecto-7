@@ -789,11 +789,12 @@ a {
 
 .chart-box {
   position: relative;
+  min-height: 340px;
 }
 
 .chart-box canvas {
   width: 100% !important;
-  height: auto !important;
+  height: 340px !important;
 }
 
 .risk-matrix {
