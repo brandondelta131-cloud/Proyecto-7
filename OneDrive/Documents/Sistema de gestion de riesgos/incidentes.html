@@ -407,7 +407,7 @@
     <header class="topbar">
       <div class="topbar-title">
         <h1>Análisis de Riesgos · Incidentes</h1>
-        <p>Peligros potenciales, casi-accidentes, accidentes y primeros auxilios</p>
+        <p>Peligros potenciales, casi-accidentes, accidentes y primeros auxilios con enfoque en áreas piloto y categorías normativas.</p>
       </div>
       <div class="topbar-actions">
         <button class="sidebar-toggle" onclick="document.body.classList.toggle('sidebar-collapsed')" title="Mostrar u ocultar menú">☰</button>
@@ -456,6 +456,28 @@
   </section>
 
   <div class="content">
+    <div class="page-surface" style="margin: 0 32px 24px; padding: 20px; background: #0f1720; border: 1px solid #192133; border-radius: 18px;">
+      <h2 style="margin:0 0 12px; color:#fff;">Categorías de riesgo clave</h2>
+      <p style="margin:0 0 16px; color:#cfd8ef;">Identifica los peligros mecánicos, químicos, eléctricos y ergonómicos para priorizar acciones correctivas en el área piloto.</p>
+      <div style="display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(180px,1fr));">
+        <div style="background:#101827; border:1px solid #1f2a45; border-radius:14px; padding:14px;">
+          <strong style="display:block; margin-bottom:8px; color:#fff;">Mecánico</strong>
+          <span style="color:#cfd8ef; font-size:13px;">Guardas, maquinaria, mantenimiento.</span>
+        </div>
+        <div style="background:#101827; border:1px solid #1f2a45; border-radius:14px; padding:14px;">
+          <strong style="display:block; margin-bottom:8px; color:#fff;">Químico</strong>
+          <span style="color:#cfd8ef; font-size:13px;">Sustancias, vapores y manejo de productos.</span>
+        </div>
+        <div style="background:#101827; border:1px solid #1f2a45; border-radius:14px; padding:14px;">
+          <strong style="display:block; margin-bottom:8px; color:#fff;">Eléctrico</strong>
+          <span style="color:#cfd8ef; font-size:13px;">Instalaciones, aislamiento y descargas.</span>
+        </div>
+        <div style="background:#101827; border:1px solid #1f2a45; border-radius:14px; padding:14px;">
+          <strong style="display:block; margin-bottom:8px; color:#fff;">Ergonómico</strong>
+          <span style="color:#cfd8ef; font-size:13px;">Posturas, movimientos repetitivos y condiciones de trabajo.</span>
+        </div>
+      </div>
+    </div>
     <div class="card-panel" id="reportPanel" style="display:none;">
       <h2>Reportar nuevo incidente</h2>
       <form id="incidentForm">
