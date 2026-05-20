@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Análisis de Riesgos - Sistema de Gestión de Riesgos</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dashboard-shell">
+  <aside class="sidebar">
+    <div>
+      <div class="sidebar-brand">
+        <a href="inicio.html" class="sidebar-brand-link">
+          <img src="descarga.webp" alt="Logo">
+          <div>
+            <span class="brand-label">SIF Analytics</span>
+            <strong>Safety Intelligence</strong>
+          </div>
+        </a>
+      </div>
+      <div class="sidebar-section">Panel</div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html"><span class="nav-icon">📊</span>Dashboard</a>
+        <a href="analisis.html" class="active"><span class="nav-icon">📈</span>SIF Analysis</a>
+        <a href="incidentes.html"><span class="nav-icon">⚠️</span>Near Miss/Incidentes</a>
+        <a href="mapa.html"><span class="nav-icon">🗺️</span>Mapa</a>
+        <a href="auditorias.html"><span class="nav-icon">🔍</span>Auditorías</a>
+        <a href="cumplimiento.html"><span class="nav-icon">✅</span>Cumplimiento</a>
+        <a href="SIF.html"><span class="nav-icon">🛡️</span>SIF</a>
+        <a href="inicio.html"><span class="nav-icon">🏠</span>Inicio</a>
+      </nav>
+    </div>
+    <div class="sidebar-footer">
+      <div>v2.4.0</div>
+      <div>Live</div>
+    </div>
+  </aside>
+
+  <main class="dashboard-main">
+    <header class="topbar">
+      <div class="topbar-title">
+        <h1>Análisis de Riesgos</h1>
+        <p>Registra peligros, incidentes y acciones con una vista de control central.</p>
+      </div>
+      <div class="topbar-actions">
+        <div class="control-pill">
+          <span>Planta</span>
+          <select>
+            <option>Plant A</option>
+            <option>All Plants</option>
+          </select>
+        </div>
+        <button class="sidebar-toggle" onclick="document.body.classList.toggle('sidebar-collapsed')" title="Mostrar u ocultar menú">☰</button>
+        <div class="email-chip">📧 contacto@corporativo.com</div>
+        <button class="icon-button" title="Notificaciones">
+          <span class="notification-dot">5</span>
+          🔔
+        </button>
+        <div class="user-widget small">
+          <img src="https://i.pravatar.cc/100?img=12" alt="John Doe">
+          <div>
+            <div class="user-name">John Doe</div>
+            <div class="user-role">HSE Manager</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+  <section class="page-content">
+    <section class="page-surface" style="max-width: 900px; margin: auto;">
+      <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:20px; align-items:center;">
+        <div>
+          <h1>Análisis de Riesgos</h1>
+          <p style="color:#9aa5c5; margin: 10px 0 0;">Registra peligros, incidentes y acciones con un nuevo panel estable y luminoso.</p>
+        </div>
+        <button class="button-primary">+ Nuevo registro</button>
+      </div>
+
+      <form style="margin-top: 28px; display:grid; gap:18px;">
+        <div class="form-row">
+          <label>
+            Tipo de registro
+            <select required>
+              <option value="">Selecciona</option>
+              <option>Peligro potencial</option>
+              <option>Accidente</option>
+              <option>Casi accidente</option>
+              <option>Primeros auxilios</option>
+            </select>
+          </label>
+          <label>
+            Área
+            <input type="text" placeholder="Área" required>
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label>
+            Persona a cargo
+            <input type="text" placeholder="Persona a cargo" required>
+          </label>
+          <label>
+            Fecha y hora
+            <input type="datetime-local" required>
+          </label>
+        </div>
+
+        <label>
+          Descripción
+          <textarea placeholder="Descripción" required></textarea>
+        </label>
+
+        <label>
+          Evidencia / Anexo
+          <input type="file">
+        </label>
+
+        <button type="submit" class="continue-btn">Guardar</button>
+      </form>
+    </section>
+  </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Cumplimiento Normativo - Sistema de Gestión de Riesgos</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dashboard-shell">
+  <aside class="sidebar">
+    <div>
+      <div class="sidebar-brand">
+        <a href="inicio.html" class="sidebar-brand-link">
+          <img src="descarga.webp" alt="Logo">
+          <div>
+            <span class="brand-label">SIF Analytics</span>
+            <strong>Safety Intelligence</strong>
+          </div>
+        </a>
+      </div>
+      <div class="sidebar-section">Panel</div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html"><span class="nav-icon">📊</span>Dashboard</a>
+        <a href="analisis.html"><span class="nav-icon">📈</span>SIF Analysis</a>
+        <a href="incidentes.html"><span class="nav-icon">⚠️</span>Near Miss/Incidentes</a>
+        <a href="mapa.html"><span class="nav-icon">🗺️</span>Mapa</a>
+        <a href="auditorias.html"><span class="nav-icon">🔍</span>Auditorías</a>
+        <a href="cumplimiento.html" class="active"><span class="nav-icon">✅</span>Cumplimiento</a>
+        <a href="SIF.html"><span class="nav-icon">🛡️</span>SIF</a>
+        <a href="inicio.html"><span class="nav-icon">🏠</span>Inicio</a>
+      </nav>
+    </div>
+    <div class="sidebar-footer">
+      <div>v2.4.0</div>
+      <div>Live</div>
+    </div>
+  </aside>
+
+  <main class="dashboard-main">
+    <header class="topbar">
+      <div class="topbar-title">
+        <h1>Cumplimiento</h1>
+        <p>Estado de cumplimiento normativo integrado por área.</p>
+      </div>
+      <div class="topbar-actions">
+        <div class="control-pill">
+          <span>Planta</span>
+          <select>
+            <option>Plant A</option>
+            <option>All Plants</option>
+          </select>
+        </div>
+        <button class="sidebar-toggle" onclick="document.body.classList.toggle('sidebar-collapsed')" title="Mostrar u ocultar menú">☰</button>
+        <div class="email-chip">📧 contacto@corporativo.com</div>
+        <button class="icon-button" title="Notificaciones">
+          <span class="notification-dot">5</span>
+          🔔
+        </button>
+        <div class="user-widget small">
+          <img src="https://i.pravatar.cc/100?img=12" alt="John Doe">
+          <div>
+            <div class="user-name">John Doe</div>
+            <div class="user-role">HSE Manager</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+  <section class="page-content">
+    <section class="page-surface" style="max-width: 760px; margin: auto;">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:18px;">
+        <div>
+          <h1>Cumplimiento Normativo</h1>
+          <p style="color:#9aa5c5; margin: 10px 0 0;">Estado de cumplimiento por norma con visualización clara y daños potenciales reducidos.</p>
+        </div>
+        <button class="button-primary">Ver detalle</button>
+      </div>
+
+      <div style="margin-top: 28px; display:grid; gap:18px;">
+        <div class="summary-card">
+          <h3>ISO 14001</h3>
+          <div class="value">95% ✅</div>
+        </div>
+        <div class="summary-card">
+          <h3>ISO 1445</h3>
+          <div class="value">90% ✅</div>
+        </div>
+        <div class="summary-card">
+          <h3>ISO 1450</h3>
+          <div class="value">88% ⚠️</div>
+        </div>
+        <div class="summary-card">
+          <h3>STPS</h3>
+          <div class="value">93% ✅</div>
+        </div>
+        <div class="summary-card">
+          <h3>SEMARNAT</h3>
+          <div class="value">85% ⚠️</div>
+        </div>
+      </div>
+    </section>
+  </section>
+  </main>
+</body>
+</html>

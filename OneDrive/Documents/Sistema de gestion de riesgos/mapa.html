@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mapa Dinámico de Riesgos</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: radial-gradient(circle at top, rgba(12, 168, 234, 0.08), transparent 20%), #0b1220;
+      color: #e1e8ff;
+    }
+    .top-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .button-primary, .button-secondary {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 18px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .button-primary {
+      background: #f4a11b;
+      color: #08101d;
+    }
+    .button-secondary {
+      background: transparent;
+      border: 1px solid #4f6ef7;
+      color: #d8e3ff;
+    }
+    .page-layout {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 20px;
+      padding: 24px 32px 40px;
+    }
+    .panel {
+      background: #09101f;
+      border: 1px solid #16203a;
+      border-radius: 20px;
+      padding: 22px;
+    }
+    .panel h2 {
+      margin-top: 0;
+      color: #fff;
+      font-size: 20px;
+    }
+    .panel p {
+      color: #9aa5c5;
+      margin: 10px 0 16px;
+    }
+    .map-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+    .map-toolbar select,
+    .map-toolbar input {
+      background: #0f1729;
+      border: 1px solid #22304f;
+      color: #fff;
+      border-radius: 12px;
+      padding: 10px 14px;
+      min-width: 180px;
+    }
+    .map-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      position: relative;
+    }
+    .map-node {
+      background: #111927;
+      border: 1px solid #22304f;
+      border-radius: 18px;
+      padding: 18px;
+      min-height: 130px;
+      cursor: pointer;
+      transition: transform 0.2s, border-color 0.2s;
+      position: relative;
+    }
+    .map-node:hover,
+    .map-node.selected {
+      transform: translateY(-2px);
+      border-color: #f4a11b;
+    }
+    .map-node h3 {
+      margin: 0 0 10px;
+      font-size: 16px;
+      color: #fff;
+    }
+    .map-node .risk-tag {
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .risk-critico { background: #dc3545; }
+    .risk-alto { background: #ff6b6b; }
+    .risk-medio { background: #ffb600; }
+    .risk-bajo { background: #19a35a; }
+    .map-node .node-info {
+      color: #cfd5e5;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .map-node .count {
+      margin-top: 12px;
+      display: flex;
+      justify-content: space-between;
+      color: #eaf0ff;
+      font-weight: 700;
+    }
+    .connections {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.3;
+    }
+    .connection-line {
+      position: absolute;
+      border-top: 1px dashed #4f6ef7;
+    }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+    .stat-card {
+      padding: 18px;
+      border-radius: 18px;
+      background: #0e1728;
+      border: 1px solid #16203a;
+    }
+    .stat-card h3 {
+      margin: 0;
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #9aa5c5;
+    }
+    .stat-card .value {
+      margin-top: 12px;
+      font-size: 28px;
+      color: #fff;
+      font-weight: 700;
+    }
+    .chart-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+    .chart-box {
+      background: #0f172a;
+      border: 1px solid #16203a;
+      border-radius: 18px;
+      padding: 18px;
+    }
+    .chart-box h3 {
+      margin: 0 0 14px;
+      font-size: 15px;
+      color: #fff;
+    }
+    .body-panel {
+      background: #0f172a;
+      border: 1px solid #16203a;
+      border-radius: 18px;
+      padding: 18px;
+    }
+    .body-visual {
+      position: relative;
+      width: 100%;
+      max-width: 220px;
+      margin: 0 auto;
+      aspect-ratio: 1 / 2;
+      background: linear-gradient(180deg, #0d1220 0%, #151d30 100%);
+      border-radius: 110px;
+      display: grid;
+      place-items: center;
+    }
+    .body-spot {
+      position: absolute;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      background: rgba(244,161,27,0.95);
+      border: 2px solid #fff;
+      cursor: pointer;
+    }
+    .body-spot::after {
+      content: attr(data-label);
+      position: absolute;
+      top: -10px;
+      left: 30px;
+      white-space: nowrap;
+      padding: 6px 10px;
+      background: rgba(12,15,26,0.95);
+      border: 1px solid #1f2a45;
+      border-radius: 12px;
+      color: #f4a11b;
+      font-size: 12px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .body-spot:hover::after {
+      opacity: 1;
+    }
+    .body-list {
+      margin-top: 18px;
+      display: grid;
+      gap: 10px;
+    }
+    .body-item {
+      display: flex;
+      justify-content: space-between;
+      color: #d1d9f4;
+      font-size: 13px;
+      padding: 10px 12px;
+      background: #101a2d;
+      border-radius: 14px;
+    }
+    .detail-panel {
+      margin-top: 20px;
+      background: #09101f;
+      border: 1px solid #16203a;
+      border-radius: 20px;
+      padding: 20px;
+    }
+    .detail-panel h2 {
+      margin-top: 0;
+      color: #fff;
+    }
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    .detail-panel .detail-box {
+      background: #0f172a;
+      border: 1px solid #16203a;
+      border-radius: 18px;
+      padding: 16px;
+    }
+    .area-map {
+      margin-top: 16px;
+      padding: 16px;
+      border: 1px solid #22304f;
+      background: linear-gradient(180deg, #08101b 0%, #101a2d 100%);
+      border-radius: 18px;
+      display: grid;
+      gap: 12px;
+    }
+    .area-map .map-title {
+      color: #9aa5c5;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin: 0 0 6px;
+    }
+    .area-map-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .area-step {
+      background: rgba(16, 24, 42, 0.85);
+      border: 1px solid #22304f;
+      border-radius: 14px;
+      padding: 14px;
+      color: #d1d9f4;
+      min-height: 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s, border-color 0.2s, background 0.2s;
+    }
+    .area-step.active {
+      border-color: #f4a11b;
+      background: rgba(244,161,27,0.12);
+    }
+    .area-step strong {
+      display: block;
+      color: #fff;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .area-step span {
+      font-size: 12px;
+      color: #9aa5c5;
+    }
+    @media (max-width: 1180px) {
+      .page-layout {
+        grid-template-columns: 1fr;
+      }
+      .chart-row {
+        grid-template-columns: 1fr;
+      }
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      .map-grid {
+        grid-template-columns: 1fr;
+      }
+      .area-map-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .detail-box h3 {
+      margin: 0 0 12px;
+      font-size: 14px;
+      color: #9aa5c5;
+    }
+    .detail-box p {
+      margin: 0;
+      color: #d1d9f4;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+    .detail-box ul {
+      padding-left: 18px;
+      margin: 0;
+      color: #d1d9f4;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .form-panel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(3, 7, 18, 0.8);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 100;
+    }
+    .form-panel.active {
+      display: flex;
+    }
+    .form-card {
+      width: min(760px, 100%);
+      background: #09101f;
+      border: 1px solid #16203a;
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+    }
+    .form-card h3 {
+      margin-top: 0;
+      color: #fff;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .form-row {
+      display: grid;
+      gap: 10px;
+    }
+    .form-row label {
+      font-size: 13px;
+      color: #9aa5c5;
+    }
+    .form-row input,
+    .form-row select,
+    .form-row textarea {
+      background: #0f172a;
+      border: 1px solid #22304f;
+      border-radius: 12px;
+      color: #e1e8ff;
+      padding: 12px 14px;
+      font-size: 14px;
+    }
+    .form-row textarea { min-height: 96px; resize: vertical; }
+    .form-actions {
+      margin-top: 18px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .tooltip-note {
+      color: #7f92b6;
+      font-size: 12px;
+    }
+    @media (max-width: 1180px) {
+      .page-layout {
+        grid-template-columns: 1fr;
+      }
+      .chart-row {
+        grid-template-columns: 1fr;
+      }
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body class="dashboard-shell">
+  <aside class="sidebar">
+    <div>
+      <div class="sidebar-brand">
+        <a href="inicio.html">
+          <img src="descarga.webp" alt="Logo">
+          <span>SIF</span>
+        </a>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html"><span class="nav-icon">📊</span>Dashboard</a>
+        <a href="incidentes.html"><span class="nav-icon">⚠️</span>Incidentes</a>
+        <a href="mapa.html" class="active"><span class="nav-icon">🗺️</span>Mapa</a>
+        <a href="auditorias.html"><span class="nav-icon">🔍</span>Auditorías</a>
+        <a href="cumplimiento.html"><span class="nav-icon">✅</span>Cumplimiento</a>
+        <a href="SIF.html"><span class="nav-icon">🛡️</span>SIF</a>
+      </nav>
+    </div>
+    <div class="sidebar-footer">
+      <div>v2.4.0</div>
+      <div>Live</div>
+    </div>
+  </aside>
+
+  <main class="dashboard-main">
+    <header class="topbar">
+      <div class="topbar-title">
+        <h1>Mapa Dinámico</h1>
+        <p>Gestiona áreas, operaciones e incidentes desde el plano.</p>
+      </div>
+      <div class="topbar-actions">
+        <div class="control-pill">
+          <span>Planta</span>
+          <select>
+            <option>Plant A</option>
+            <option>All Plants</option>
+          </select>
+        </div>
+        <button class="sidebar-toggle" onclick="document.body.classList.toggle('sidebar-collapsed')" title="Mostrar u ocultar menú">☰</button>
+        <div class="email-chip">📧 contacto@corporativo.com</div>
+        <button class="icon-button small" title="Notificaciones">
+          <span class="notification-dot">5</span>🔔
+        </button>
+        <div class="user-widget small">
+          <img src="https://i.pravatar.cc/100?img=12" alt="John Doe">
+          <div>
+            <div class="user-name">John Doe</div>
+            <div class="user-role">HSE Manager</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="page-content">
+      <section class="page-surface" style="max-width: 980px; margin: auto;">
+        <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:18px; align-items:center;">
+          <div>
+          <h1>Mapa Dinámico de Riesgos</h1>
+          <p style="margin: 6px 0 0; color:#8c9dc9;">Gestiona áreas, operaciones e incidentes desde el plano de planta.</p>
+        </div>
+        <div class="top-actions">
+          <button class="button-primary" onclick="openForm('area')">+ Área</button>
+          <button class="button-primary" onclick="openForm('incident')">+ Incidente</button>
+        </div>
+      </div>
+    </section>
+    <div class="page-layout">
+      <section class="panel">
+        <div class="map-toolbar">
+        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+          <label style="color:#9aa5c5;">Área:</label>
+          <select id="areaFilter" onchange="renderMap()"></select>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+          <span style="color:#9aa5c5;">Operaciones registradas:</span>
+          <strong id="operationCount">0</strong>
+        </div>
+      </div>
+
+      <div class="map-grid" id="mapGrid">
+        <div class="connections">
+          <div class="connection-line" style="top: 23%; left: 16%; width: 30%;"></div>
+          <div class="connection-line" style="top: 23%; right: 16%; width: 30%;"></div>
+          <div class="connection-line" style="top: 53%; left: 10%; width: 20%;"></div>
+          <div class="connection-line" style="top: 53%; right: 10%; width: 20%;"></div>
+        </div>
+      </div>
+
+      <div class="detail-panel" id="areaDetail">
+        <h2>Área seleccionada</h2>
+        <div class="detail-grid">
+          <div class="detail-box" style="display: flex; justify-content: space-between; align-items: start;">
+            <div>
+              <h3>Área</h3>
+              <p id="detailName" style="margin: 0; color: #d1d9f4;">Ninguna área seleccionada</p>
+            </div>
+            <button id="deleteAreaBtn" class="button-secondary" style="display:none;padding:8px 12px;font-size:12px;" onclick="deleteArea()">Eliminar celda</button>
+          </div>
+          <div class="detail-box">
+            <h3>Riesgo actual</h3>
+            <p id="detailRisk">-</p>
+          </div>
+          <div class="detail-box">
+            <h3>Operaciones con incidentes</h3>
+            <ul id="detailOperations"></ul>
+          </div>
+          <div class="detail-box">
+            <h3>Flujo de celda</h3>
+            <p id="detailFlow">Selecciona un área para ver el flujo operacional.</p>
+          </div>
+        </div>
+        <div class="detail-box" style="grid-column: 1 / -1;">
+          <h3>Plano de celda</h3>
+          <div class="area-map" id="areaMap">
+            <p class="map-title">Selecciona un área para ver el plano y los pasos con incidentes.</p>
+            <div class="area-map-grid" id="areaMapGrid"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="summary-grid">
+        <div class="stat-card">
+          <h3>Total incidentes</h3>
+          <div class="value" id="kpiIncidents">0</div>
+        </div>
+        <div class="stat-card">
+          <h3>Accidentes</h3>
+          <div class="value" id="kpiAccidents">0</div>
+        </div>
+        <div class="stat-card">
+          <h3>Casi accidentes</h3>
+          <div class="value" id="kpiNearMisses">0</div>
+        </div>
+        <div class="stat-card">
+          <h3>Operaciones afectadas</h3>
+          <div class="value" id="kpiOperations">0</div>
+        </div>
+      </div>
+
+      <div class="chart-row">
+        <div class="chart-box">
+          <h3>Incidentes por mes</h3>
+          <canvas id="trendChart" height="220"></canvas>
+        </div>
+        <div class="chart-box">
+          <h3>Distribución por riesgo</h3>
+          <canvas id="riskChart" height="220"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-row">
+        <div class="chart-box" style="grid-column: 1 / -1;">
+          <h3>Incidentes por operación</h3>
+          <canvas id="operationChart" height="240"></canvas>
+        </div>
+      </div>
+
+      <div class="body-panel">
+        <h3>Lesiones por parte del cuerpo</h3>
+        <div class="body-visual" id="bodyVisual">
+          <div class="body-spot" style="top: 8%; left: 50%;" data-label="Cabeza: 18%"></div>
+          <div class="body-spot" style="top: 25%; left: 49%;" data-label="Hombros: 22%"></div>
+          <div class="body-spot" style="top: 41%; left: 48%;" data-label="Torso: 14%"></div>
+          <div class="body-spot" style="top: 58%; left: 39%;" data-label="Brazo izq: 10%"></div>
+          <div class="body-spot" style="top: 58%; left: 57%;" data-label="Brazo der: 12%"></div>
+          <div class="body-spot" style="top: 75%; left: 49%;" data-label="Pierna: 24%"></div>
+        </div>
+        <div class="body-list" id="bodyInjuryList"></div>
+      </div>
+    </section>
+  </section>
+  </main>
+
+  <div class="form-panel" id="formPanel">
+    <div class="form-card" id="formCard">
+      <h3 id="formTitle">Formulario</h3>
+      <div class="form-grid" id="formFields"></div>
+      <div class="form-actions">
+        <button class="button-secondary" onclick="closeForm()">Cancelar</button>
+        <button class="button-primary" id="formSubmitButton">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const areasKey = 'riskAreas';
+    const operationsKey = 'riskOperations';
+    const incidentsKey = 'incidentRecords';
+
+    const defaultAreas = [
+      { id: 'area1', name: 'Célula A', riskLevel: 'Alto', flow: 'Recepción → Montaje → Verificación', type: 'Planta' },
+      { id: 'area2', name: 'Célula B', riskLevel: 'Medio', flow: 'Corte → Soldadura → Inspección', type: 'Mantenimiento' },
+      { id: 'area3', name: 'Célula C', riskLevel: 'Crítico', flow: 'Línea de pintura → Secado → Embalaje', type: 'Operaciones' },
+      { id: 'area4', name: 'Célula D', riskLevel: 'Bajo', flow: 'Almacenaje → Preparación → Despacho', type: 'Administración' },
+      { id: 'area5', name: 'Célula E', riskLevel: 'Alto', flow: 'Moldeo → Inspección → Envío', type: 'Calidad' },
+      { id: 'area6', name: 'Célula F', riskLevel: 'Medio', flow: 'Empaque → Etiquetado → Control final', type: 'Seguridad' }
+    ];
+
+    let areas = JSON.parse(localStorage.getItem(areasKey)) || defaultAreas;
+    let tempAreaOperations = []; 
+    let operations = JSON.parse(localStorage.getItem(operationsKey)) || [
+      { id: 'op1', areaId: 'area1', name: 'Montaje de componentes' },
+      { id: 'op2', areaId: 'area2', name: 'Soldadura de unión' },
+      { id: 'op3', areaId: 'area3', name: 'Aplicación de pintura' },
+      { id: 'op4', areaId: 'area4', name: 'Recepción de materia prima' }
+    ];
+    let incidents = JSON.parse(localStorage.getItem(incidentsKey)) || [];
+    let selectedAreaId = null;
+
+    function saveData() {
+      localStorage.setItem(areasKey, JSON.stringify(areas));
+      localStorage.setItem(operationsKey, JSON.stringify(operations));
+      localStorage.setItem(incidentsKey, JSON.stringify(incidents));
+    }
+
+    function openForm(type) {
+      document.getElementById('formPanel').classList.add('active');
+      const title = document.getElementById('formTitle');
+      const fields = document.getElementById('formFields');
+      const button = document.getElementById('formSubmitButton');
+      fields.innerHTML = '';
+      if (type === 'area') {
+        tempAreaOperations = [];
+        title.textContent = 'Agregar nueva área';
+        fields.innerHTML = `
+          <div class="form-row"><label>Nombre de área</label><input id="inputName" placeholder="Célula X"></div>
+          <div class="form-row"><label>Tipo de área</label><select id="inputType"><option>Planta</option><option>Operaciones</option><option>Mantenimiento</option><option>Calidad</option><option>Seguridad</option><option>Administración</option></select></div>
+          <div class="form-row" style="grid-column: 1 / -1;"><label>Operaciones de la celda</label><input id="inputOperationName" placeholder="Nombre de operación" /></div>
+          <div class="form-row" style="grid-column: 1 / -1; display: flex; gap: 10px; align-items: center;">
+            <button type="button" class="button-secondary" onclick="addTempOperation()">Agregar operación</button>
+            <span class="tooltip-note">Agrega las operaciones que forman parte del flujo de esta celda.</span>
+          </div>
+          <div class="form-row" style="grid-column: 1 / -1;"><div id="tempOperationsList" style="display:grid;gap:8px;"></div></div>
+        `;
+        button.onclick = () => { addArea(); };
+      } else {
+        title.textContent = 'Registrar incidente';
+        fields.innerHTML = `
+          <div class="form-row"><label>Área</label><select id="inputArea">${areas.map(area => `<option value="${area.id}">${area.name}</option>`).join('')}</select></div>
+          <div class="form-row"><label>Operación</label><select id="inputOperation"></select></div>
+          <div class="form-row"><label>Tipo de riesgo</label><select id="inputRisk"><option>Crítico</option><option>Alto</option><option>Medio</option><option>Bajo</option></select></div>
+          <div class="form-row"><label>Gravedad</label><select id="inputSeverity"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></div>
+          <div class="form-row"><label>Descripción</label><textarea id="inputDescription" placeholder="Descripción del incidente"></textarea></div>
+          <div class="form-row"><label>Estado acción</label><select id="inputStatus"><option>Abierta</option><option>En progreso</option><option>Cerrada</option></select></div>
+          <div class="form-row"><label>Fecha compromiso cierre</label><input id="inputCommitDate" type="datetime-local"></div>
+          <div class="form-row"><label>Fecha incidente</label><input id="inputDate" type="datetime-local" value="${new Date().toISOString().slice(0,16)}"></div>
+        `;
+        button.onclick = () => { addIncident(); };
+        document.getElementById('inputArea').addEventListener('change', populateOperationOptions);
+        populateOperationOptions();
+      }
+    }
+
+    function closeForm() {
+      document.getElementById('formPanel').classList.remove('active');
+    }
+
+    function addTempOperation() {
+      const operationName = document.getElementById('inputOperationName').value.trim();
+      if (!operationName) {
+        alert('Ingresa un nombre para la operación.');
+        return;
+      }
+      tempAreaOperations.push(operationName);
+      document.getElementById('inputOperationName').value = '';
+      renderTempOperations();
+    }
+
+    function renderTempOperations() {
+      const list = document.getElementById('tempOperationsList');
+      if (!list) return;
+      list.innerHTML = tempAreaOperations.length
+        ? tempAreaOperations.map((op, index) => `
+            <div style="display:flex;justify-content:space-between;align-items:center;background:#08111f;padding:10px 12px;border:1px solid #22304f;border-radius:12px;">
+              <span>${op}</span>
+              <button type="button" class="button-secondary" style="padding:6px 10px;" onclick="removeTempOperation(${index})">Eliminar</button>
+            </div>
+          `).join('')
+        : '<span style="color:#9aa5c5;">No hay operaciones añadidas aún.</span>';
+    }
+
+    function removeTempOperation(index) {
+      tempAreaOperations.splice(index, 1);
+      renderTempOperations();
+    }
+
+    function addArea() {
+      const name = document.getElementById('inputName').value.trim();
+      const type = document.getElementById('inputType').value;
+      if (!name || tempAreaOperations.length === 0) {
+        alert('Completa el nombre de la área y agrega al menos una operación.');
+        return;
+      }
+      const newAreaId = `area_${Date.now()}`;
+      areas.push({ id: newAreaId, name, type, riskLevel: 'Medio', flow: 'Flujo generado automáticamente' });
+      tempAreaOperations.forEach(opName => {
+        operations.push({ id: `op_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`, areaId: newAreaId, name: opName, details: '' });
+      });
+      tempAreaOperations = [];
+      saveData();
+      closeForm();
+      refreshAll();
+    }
+
+    function addIncident() {
+      const areaId = document.getElementById('inputArea').value;
+      const operationId = document.getElementById('inputOperation').value;
+      const riskLevel = document.getElementById('inputRisk').value;
+      const severity = parseInt(document.getElementById('inputSeverity').value, 10);
+      const description = document.getElementById('inputDescription').value.trim();
+      const status = document.getElementById('inputStatus').value;
+      const commitDate = document.getElementById('inputCommitDate').value;
+      const date = document.getElementById('inputDate').value;
+      if (!areaId || !operationId || !description || !date) {
+        alert('Completa todos los datos del incidente.');
+        return;
+      }
+      incidents.push({ id: `inc_${Date.now()}`, areaId, operationId, riskLevel, severity, description, status, commitDate, date });
+      saveData();
+      closeForm();
+      refreshAll();
+    }
+
+    function populateOperationOptions() {
+      const areaId = document.getElementById('inputArea').value;
+      const select = document.getElementById('inputOperation');
+      const ops = operations.filter(op => op.areaId === areaId);
+      select.innerHTML = ops.length ? ops.map(op => `<option value="${op.id}">${op.name}</option>`).join('') : '<option value="">Sin operaciones</option>';
+    }
+
+    function renderMap() {
+      const areaFilter = document.getElementById('areaFilter').value;
+      const mapGrid = document.getElementById('mapGrid');
+      mapGrid.querySelectorAll('.map-node').forEach(node => node.remove());
+      const filtered = areas.filter(area => {
+        const matchArea = !areaFilter || area.id === areaFilter;
+        return matchArea;
+      });
+      filtered.forEach(area => {
+        const node = document.createElement('div');
+        node.className = `map-node${selectedAreaId === area.id ? ' selected' : ''}`;
+        node.onclick = () => selectArea(area.id);
+        const incidentCount = incidents.filter(i => i.areaId === area.id).length;
+        const riskClass = area.riskLevel === 'Crítico' ? 'risk-critico' : area.riskLevel === 'Alto' ? 'risk-alto' : area.riskLevel === 'Medio' ? 'risk-medio' : 'risk-bajo';
+        const operationCount = operations.filter(op => op.areaId === area.id).length;
+        node.innerHTML = `
+          <h3>${area.name}</h3>
+          <span class="risk-tag ${riskClass}">${area.riskLevel}</span>
+          <div class="node-info">${area.type}</div>
+          <div class="node-info">Operaciones: ${operationCount}</div>
+          <div class="node-info">Incidentes: <strong>${incidentCount}</strong></div>
+        `;
+        mapGrid.appendChild(node);
+      });
+      renderSelectedArea();
+    }
+
+    function selectArea(areaId) {
+      selectedAreaId = areaId;
+      renderMap();
+      document.getElementById('areaFilter').value = areaId;
+      renderSelectedArea();
+    }
+
+    function renderSelectedArea() {
+      const detailName = document.getElementById('detailName');
+      const detailRisk = document.getElementById('detailRisk');
+      const detailFlow = document.getElementById('detailFlow');
+      const detailOperations = document.getElementById('detailOperations');
+      const deleteBtn = document.getElementById('deleteAreaBtn');
+      const area = areas.find(a => a.id === selectedAreaId);
+      if (!area) {
+        detailName.textContent = 'Ninguna área seleccionada';
+        detailRisk.textContent = '-';
+        detailFlow.textContent = 'Selecciona un área para ver el flujo operacional.';
+        detailOperations.innerHTML = '<li style="color:#9aa5c5;">Selecciona un área para ver operaciones</li>';
+        deleteBtn.style.display = 'none';
+        renderAreaMap(null);
+        return;
+      }
+      deleteBtn.style.display = 'block';
+      const areaOperations = operations.filter(op => op.areaId === area.id);
+      const areaIncidents = incidents.filter(inc => inc.areaId === area.id);
+      const incidentsByOperation = areaOperations.map(op => {
+        const count = areaIncidents.filter(inc => inc.operationId === op.id).length;
+        return { name: op.name, count };
+      }).filter(item => item.count > 0);
+      detailName.textContent = `${area.name} • ${area.type}`;
+      detailRisk.textContent = area.riskLevel;
+      detailFlow.textContent = area.flow;
+      if (!incidentsByOperation.length) {
+        detailOperations.innerHTML = '<li style="color:#9aa5c5;">No hay incidentes registrados en esta área.</li>';
+      } else {
+        detailOperations.innerHTML = incidentsByOperation.map(item => `<li>${item.name}: ${item.count} incidente(s)</li>`).join('');
+      }
+      renderAreaMap(area, areaOperations, areaIncidents);
+    }
+
+    function renderAreaMap(area, ops = [], areaIncidents = []) {
+      const grid = document.getElementById('areaMapGrid');
+      grid.innerHTML = '';
+      if (!area) {
+        grid.innerHTML = '<div style="color:#9aa5c5;grid-column:1/-1;">Selecciona un área para ver el plano expandido y los pasos operacionales.</div>';
+        return;
+      }
+      const steps = area.flow.split('→').map(step => step.trim()).filter(Boolean);
+      const stepData = steps.map(step => {
+        const words = step.toLowerCase().split(/\s+/).filter(Boolean);
+        const relatedOps = ops.filter(op => words.some(word => op.name.toLowerCase().includes(word)));
+        const count = areaIncidents.filter(inc => relatedOps.some(op => op.id === inc.operationId)).length;
+        return { label: step, count, active: count > 0 };
+      });
+      if (!stepData.length) {
+        grid.innerHTML = '<div style="color:#9aa5c5;grid-column:1/-1;">No hay pasos definidos para esta área.</div>';
+        return;
+      }
+      stepData.forEach(step => {
+        const stepNode = document.createElement('div');
+        stepNode.className = `area-step${step.active ? ' active' : ''}`;
+        stepNode.innerHTML = `
+          <strong>${step.label}</strong>
+          <span>${step.count} incidentes aquí</span>
+        `;
+        grid.appendChild(stepNode);
+      });
+    }
+
+    function refreshAll() {
+      saveData();
+      renderAreaFilter();
+      renderMap();
+      renderKpis();
+      renderCharts();
+      renderBodyInjuries();
+      document.getElementById('operationCount').textContent = operations.length;
+    }
+
+    function renderAreaFilter() {
+      const areaFilter = document.getElementById('areaFilter');
+      areaFilter.innerHTML = '<option value="">Todas las áreas</option>' + areas.map(area => `<option value="${area.id}">${area.name}</option>`).join('');
+      if (selectedAreaId) areaFilter.value = selectedAreaId;
+    }
+
+    function renderKpis() {
+      document.getElementById('kpiIncidents').textContent = incidents.length;
+      document.getElementById('kpiAccidents').textContent = incidents.filter(item => item.riskLevel === 'Crítico' || item.severity >= 4).length;
+      document.getElementById('kpiNearMisses').textContent = incidents.filter(item => item.riskLevel === 'Medio').length;
+      document.getElementById('kpiOperations').textContent = operations.filter(op => incidents.some(inc => inc.operationId === op.id)).length;
+    }
+
+    function getTrendData() {
+      const months = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+      const counts = Array(12).fill(0);
+      incidents.forEach(incident => {
+        const date = new Date(incident.date);
+        if (!isNaN(date)) {
+          counts[date.getMonth()] += 1;
+        }
+      });
+      return { labels: months, values: counts };
+    }
+
+    function getRiskDistribution() {
+      const levels = ['Crítico','Alto','Medio','Bajo'];
+      return levels.map(level => incidents.filter(item => item.riskLevel === level).length);
+    }
+
+    function getOperationDistribution() {
+      const opCounts = operations.map(op => ({ name: op.name, count: incidents.filter(inc => inc.operationId === op.id).length }));
+      return opCounts.filter(item => item.count > 0).sort((a,b) => b.count - a.count);
+    }
+
+    function renderCharts() {
+      const trendData = getTrendData();
+      const riskData = getRiskDistribution();
+      const operationData = getOperationDistribution();
+      const trendCtx = document.getElementById('trendChart').getContext('2d');
+      const riskCtx = document.getElementById('riskChart').getContext('2d');
+      const opCtx = document.getElementById('operationChart').getContext('2d');
+      if (window.trendChart) window.trendChart.destroy();
+      if (window.riskChart) window.riskChart.destroy();
+      if (window.opChart) window.opChart.destroy();
+      window.trendChart = new Chart(trendCtx, {
+        type: 'line',
+        data: {
+          labels: trendData.labels,
+          datasets: [{
+            label: 'Incidentes',
+            data: trendData.values,
+            borderColor: '#4f6ef7',
+            backgroundColor: 'rgba(79,110,247,0.18)',
+            fill: true,
+            tension: 0.35,
+            pointRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { ticks: { color: '#c7d1ec' }, grid: { color: '#16203a' } },
+            y: { ticks: { color: '#c7d1ec' }, grid: { color: '#16203a' }, beginAtZero: true }
+          }
+        }
+      });
+      window.riskChart = new Chart(riskCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Crítico','Alto','Medio','Bajo'],
+          datasets: [{
+            data: riskData,
+            backgroundColor: ['#dc3545','#ff6b6b','#ffb600','#19a35a']
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: 'bottom', labels: { color: '#c7d1ec' } }
+          }
+        }
+      });
+      window.opChart = new Chart(opCtx, {
+        type: 'bar',
+        data: {
+          labels: operationData.map(item => item.name),
+          datasets: [{
+            label: 'Incidentes por operación',
+            data: operationData.map(item => item.count),
+            backgroundColor: '#4f6ef7'
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { ticks: { color: '#c7d1ec' }, grid: { color: '#16203a' } },
+            y: { ticks: { color: '#c7d1ec' }, grid: { color: '#16203a' }, beginAtZero: true }
+          }
+        }
+      });
+    }
+
+    function deleteArea() {
+      if (!selectedAreaId) return;
+      const area = areas.find(a => a.id === selectedAreaId);
+      if (!area) return;
+      if (!confirm(`¿Estás seguro de que deseas eliminar la celda "${area.name}" y todas sus operaciones?`)) {
+        return;
+      }
+      areas = areas.filter(a => a.id !== selectedAreaId);
+      operations = operations.filter(op => op.areaId !== selectedAreaId);
+      incidents = incidents.filter(inc => inc.areaId !== selectedAreaId);
+      selectedAreaId = null;
+      saveData();
+      refreshAll();
+    }
+
+    function renderBodyInjuries() {
+      const injuries = [
+        { label: 'Cabeza', percent: 18 },
+        { label: 'Hombros', percent: 22 },
+        { label: 'Torso', percent: 14 },
+        { label: 'Brazo izquierdo', percent: 10 },
+        { label: 'Brazo derecho', percent: 12 },
+        { label: 'Pierna', percent: 24 }
+      ];
+      const list = document.getElementById('bodyInjuryList');
+      list.innerHTML = injuries.map(item => `
+        <div class="body-item"><span>${item.label}</span><strong>${item.percent}%</strong></div>
+      `).join('');
+      const spots = document.querySelectorAll('.body-spot');
+      spots.forEach((spot, index) => {
+        const item = injuries[index];
+        spot.setAttribute('data-label', `${item.label}: ${item.percent}%`);
+      });
+    }
+
+    refreshAll();
+  </script>
+</body>
+</html>

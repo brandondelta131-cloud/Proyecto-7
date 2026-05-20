@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Sistema de Gestión de Riesgos</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .login-box {
+      max-width: 430px;
+      margin: 40px auto 20px;
+      text-align: center;
+    }
+    .auth-btn {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+    .auth-btn img {
+      width: 20px;
+      margin-right: 10px;
+    }
+    .page-intro {
+      color: #9aa5c5;
+      margin-bottom: 24px;
+      line-height: 1.7;
+    }
+  </style>
+</head>
+<body>
+  <header class="global-header">
+    <div class="header-row top-email-row">
+      <div class="global-brand">
+        <a href="inicio.html">
+          <img src="descarga.webp" alt="Logo">
+          <span>Sistema Integrado de Gestión de Riesgos</span>
+        </a>
+      </div>
+      <div class="topbar-actions">
+        <div class="email-chip">📧 contacto@corporativo.com</div>
+        <div class="user-widget small">
+          <img src="https://i.pravatar.cc/100?img=12" alt="John Doe">
+          <div>
+            <div class="user-name">John Doe</div>
+            <div class="user-role">HSE Manager</div>
+          </div>
+        </div>
+        <button class="nav-toggle" onclick="document.body.classList.toggle('nav-collapsed')" title="Mostrar u ocultar menú">☰</button>
+      </div>
+    </div>
+    <div class="header-row nav-row centered-nav">
+      <nav class="global-nav">
+        <a href="inicio.html">Inicio</a>
+        <a href="registro.html" class="active">Registro</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-content">
+    <section class="page-surface login-box">
+      <h2>Iniciar Sesión</h2>
+      <p class="page-intro">Accede a tu espacio con el nuevo diseño unificado de gestión de riesgos.</p>
+
+      <button class="auth-btn google-btn" onclick="loginGoogle()">
+        <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google">
+        Continuar con Google
+      </button>
+      <button class="auth-btn github-btn" onclick="loginGitHub()">
+        <img src="https://github.githubassets.com/images/modules/site/icons/header/github-logo.png" alt="GitHub">
+        Continuar con GitHub
+      </button>
+      <button class="auth-btn apple-btn" onclick="loginApple()">
+        <img src="https://developer.apple.com/assets/elements/icons/sign-in-with-apple-marketing/sign-in-with-apple-marketing.svg" alt="Apple">
+        Continuar con Apple
+      </button>
+
+      <div class="divider">O</div>
+      <form onsubmit="return validarLogin()">
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="password" id="password" placeholder="Contraseña" required>
+        <select id="rol" required>
+          <option value="">Selecciona tu rol</option>
+          <option value="admin">Admin</option>
+          <option value="auditor">Auditor</option>
+          <option value="operario">Operario</option>
+        </select>
+        <button type="submit" class="continue-btn">Continuar</button>
+      </form>
+      <p>¿No tienes cuenta? <a href="registro.html">Crear tu cuenta</a></p>
+    </section>
+
+    <section class="page-surface" style="max-width:430px; margin: 0 auto; text-align: center;">
+      <div class="divider">🔒 Cumplimiento actual: <strong>92%</strong></div>
+    </section>
+  </main>
+
+  <script>
+    function validarLogin() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const rol = document.getElementById("rol").value;
+
+      if (email && password && rol) {
+        if (rol === 'admin' && email !== 'brandon.delta.131@gmail.com') {
+          alert("Solo el administrador puede seleccionar el rol de admin");
+          return false;
+        }
+        alert("Login correcto como " + rol);
+        window.location.href = "inicio.html?rol=" + rol;
+      } else {
+        alert("Completa todos los campos");
+      }
+      return false;
+    }
+
+    function loginGoogle() {
+      alert("Login con Google exitoso");
+      window.location.href = "inicio.html?rol=operario";
+    }
+
+    function loginGitHub() {
+      alert("Login con GitHub exitoso");
+      window.location.href = "inicio.html?rol=auditor";
+    }
+
+    function loginApple() {
+      alert("Login con Apple exitoso");
+      window.location.href = "inicio.html?rol=operario";
+    }
+  </script>
+</body>
+</html>

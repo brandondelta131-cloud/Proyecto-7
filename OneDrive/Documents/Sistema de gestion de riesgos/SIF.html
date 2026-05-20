@@ -1,0 +1,285 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIF Executive Dashboard - Sistema de Gestión de Riesgos</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="dashboard-shell">
+  <aside class="sidebar">
+    <div>
+      <div class="sidebar-brand">
+        <a href="inicio.html" class="sidebar-brand-link">
+          <img src="descarga.webp" alt="Logo">
+          <div>
+            <span class="brand-label">SIF Analytics</span>
+            <strong>Safety Intelligence</strong>
+          </div>
+        </a>
+      </div>
+      <div class="sidebar-section">Panel</div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html"><span class="nav-icon">📊</span>Dashboard</a>
+        <a href="analisis.html"><span class="nav-icon">📈</span>SIF Analysis</a>
+        <a href="incidentes.html"><span class="nav-icon">⚠️</span>Near Miss/Incidentes</a>
+        <a href="mapa.html"><span class="nav-icon">🗺️</span>Mapa</a>
+        <a href="auditorias.html"><span class="nav-icon">🔍</span>Auditorías</a>
+        <a href="cumplimiento.html"><span class="nav-icon">✅</span>Cumplimiento</a>
+        <a href="SIF.html" class="active"><span class="nav-icon">🛡️</span>SIF</a>
+        <a href="inicio.html"><span class="nav-icon">🏠</span>Inicio</a>
+      </nav>
+    </div>
+    <div class="sidebar-footer">
+      <div>v2.4.0</div>
+      <div>Live</div>
+    </div>
+  </aside>
+
+  <main class="dashboard-main">
+    <header class="topbar">
+      <div class="topbar-title">
+        <span class="brand-label">SIF Executive Dashboard</span>
+        <h1>SIF Executive Dashboard</h1>
+        <p>Visión corporativa unificada de riesgos, near miss y acciones correctivas.</p>
+      </div>
+      <div class="topbar-actions">
+        <div class="control-pill">
+          <span>Planta</span>
+          <select>
+            <option>Plant A</option>
+            <option>All Plants</option>
+          </select>
+        </div>
+        <button class="sidebar-toggle" onclick="document.body.classList.toggle('sidebar-collapsed')" title="Mostrar u ocultar menú">☰</button>
+        <div class="email-chip">📧 contacto@corporativo.com</div>
+        <button class="icon-button" title="Notificaciones">
+          <span class="notification-dot">5</span>
+          🔔
+        </button>
+        <div class="user-widget">
+          <img src="https://i.pravatar.cc/100?img=12" alt="John Doe">
+          <div>
+            <div class="user-name">John Doe</div>
+            <div class="user-role">HSE Manager</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="metrics-grid">
+      <article class="metric-card">
+        <div class="metric-title">SIF Potentials</div>
+        <div class="metric-value">18</div>
+        <div class="metric-note">+12% vs Apr</div>
+      </article>
+      <article class="metric-card">
+        <div class="metric-title">Fatalities</div>
+        <div class="metric-value">0</div>
+        <div class="metric-note">0% vs Apr</div>
+      </article>
+      <article class="metric-card">
+        <div class="metric-title">High Risk Near Miss</div>
+        <div class="metric-value">42</div>
+        <div class="metric-note">+27% vs Apr</div>
+      </article>
+      <article class="metric-card">
+        <div class="metric-title">Open CAPA</div>
+        <div class="metric-value">12</div>
+        <div class="metric-note">+9% vs Apr</div>
+      </article>
+      <article class="metric-card">
+        <div class="metric-title">Days Without SIF</div>
+        <div class="metric-value">187</div>
+        <div class="metric-note">-8 days vs Apr</div>
+      </article>
+      <article class="metric-card">
+        <div class="metric-title">High Risk Areas</div>
+        <div class="metric-value">3</div>
+        <div class="metric-note">See details</div>
+      </article>
+    </section>
+
+    <section class="panel-grid">
+      <div class="chart-panel">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;">
+          <h2 style="margin:0; color:#fff;">SIF Trend Over Time</h2>
+          <button class="secondary-button">View full report</button>
+        </div>
+        <div class="chart-box" style="margin-top:18px;">
+          <canvas id="trendChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-panel">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;">
+          <h2 style="margin:0; color:#fff;">SIF Risk Matrix</h2>
+          <button class="secondary-button">View full report</button>
+        </div>
+        <div class="risk-matrix">
+          <div class="matrix-cell level-1">1</div>
+          <div class="matrix-cell level-2">1</div>
+          <div class="matrix-cell level-3">2</div>
+          <div class="matrix-cell level-4">4</div>
+          <div class="matrix-cell level-5">7</div>
+          <div class="matrix-cell level-2">0</div>
+          <div class="matrix-cell level-3">1</div>
+          <div class="matrix-cell level-4">3</div>
+          <div class="matrix-cell level-5">6</div>
+          <div class="matrix-cell level-5">8</div>
+          <div class="matrix-cell level-3">2</div>
+          <div class="matrix-cell level-4">3</div>
+          <div class="matrix-cell level-4">5</div>
+          <div class="matrix-cell level-5">5</div>
+          <div class="matrix-cell level-5">9</div>
+          <div class="matrix-cell level-3">1</div>
+          <div class="matrix-cell level-3">2</div>
+          <div class="matrix-cell level-4">3</div>
+          <div class="matrix-cell level-5">4</div>
+          <div class="matrix-cell level-5">6</div>
+        </div>
+        <div class="risk-legend">
+          <span><span class="legend-swatch" style="background:#1c365b"></span>Negligible</span>
+          <span><span class="legend-swatch" style="background:#1f4d7d"></span>Minor</span>
+          <span><span class="legend-swatch" style="background:#f4a11b"></span>Moderate</span>
+          <span><span class="legend-swatch" style="background:#f04e44"></span>Major</span>
+          <span><span class="legend-swatch" style="background:#c93b58"></span>Catastrophic</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel-grid">
+      <div class="chart-panel">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;">
+          <h2 style="margin:0; color:#fff;">Incidents by Energy Type</h2>
+          <button class="secondary-button">View full report</button>
+        </div>
+        <div class="chart-box" style="margin-top:18px;">
+          <canvas id="energyChart"></canvas>
+        </div>
+      </div>
+      <div class="activity-panel">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;">
+          <h2 style="margin:0; color:#fff;">Top High Risk Activities</h2>
+          <button class="secondary-button">View full report</button>
+        </div>
+        <ul>
+          <li><strong>Working at Heights</strong><span>14 events</span></li>
+          <li><strong>Electrical Work</strong><span>12 events</span></li>
+          <li><strong>Lockout / Tagout</strong><span>9 events</span></li>
+          <li><strong>Confined Space Entry</strong><span>7 events</span></li>
+          <li><strong>Lifting Operations</strong><span>6 events</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="panel-grid">
+      <div class="chart-panel">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;">
+          <h2 style="margin:0; color:#fff;">Root Cause Analysis (Pareto)</h2>
+          <button class="secondary-button">View full report</button>
+        </div>
+        <div class="chart-box" style="margin-top:18px;">
+          <canvas id="rootCauseChart"></canvas>
+        </div>
+      </div>
+      <div class="activity-panel">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;">
+          <h2 style="margin:0; color:#fff;">Predictive Insights</h2>
+          <button class="secondary-button">View full analysis</button>
+        </div>
+        <ul>
+          <li><strong>Maintenance - Night Shift</strong><span style="color:#f04e44;">High Risk +42%</span></li>
+          <li><strong>Electrical Work</strong><span style="color:#f4a11b;">Medium Risk +28%</span></li>
+          <li><strong>Plant A Overall</strong><span style="color:#4bc076;">Low Risk -15%</span></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const trendCtx = document.getElementById('trendChart').getContext('2d');
+    new Chart(trendCtx, {
+      type: 'line',
+      data: {
+        labels: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May'],
+        datasets: [
+          {
+            label: 'SIF Potentials',
+            data: [28, 35, 32, 41, 38, 42],
+            borderColor: '#f04e44',
+            backgroundColor: 'rgba(240,78,68,0.18)',
+            tension: 0.4,
+            fill: true,
+            pointRadius: 4
+          },
+          {
+            label: 'High Risk Near Miss',
+            data: [18, 22, 24, 29, 34, 42],
+            borderColor: '#f4a11b',
+            backgroundColor: 'rgba(244,161,27,0.18)',
+            tension: 0.4,
+            fill: true,
+            pointRadius: 4
+          },
+          {
+            label: 'SIF Confirmed',
+            data: [8, 10, 9, 14, 16, 18],
+            borderColor: '#0ca8ea',
+            backgroundColor: 'rgba(12,168,234,0.18)',
+            tension: 0.4,
+            fill: true,
+            pointRadius: 4
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: { grid: { display: false }, ticks: { color: '#9aa5c5' } },
+          y: { grid: { color: 'rgba(255,255,255,0.08)' }, ticks: { color: '#9aa5c5' }, beginAtZero: true }
+        },
+        plugins: { legend: { labels: { color: '#9aa5c5' } } }
+      }
+    });
+
+    const energyCtx = document.getElementById('energyChart').getContext('2d');
+    new Chart(energyCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Electrical', 'Gravity', 'Mechanical', 'Chemical', 'Pressure', 'Thermal', 'Other'],
+        datasets: [{
+          data: [33.3, 22.2, 16.7, 11.1, 5.6, 5.6, 5.6],
+          backgroundColor: ['#0ca8ea', '#f04e44', '#c93b58', '#f4a11b', '#4bc076', '#7c5cf8', '#6fc6a8']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'bottom', labels: { color: '#9aa5c5' } } }
+      }
+    });
+
+    const rootCauseCtx = document.getElementById('rootCauseChart').getContext('2d');
+    new Chart(rootCauseCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Procedure Not Followed', 'Inadequate Training', 'Equipment Failure', 'Poor Supervision', 'Complacency', 'Other'],
+        datasets: [{
+          label: 'Occurrences',
+          data: [16, 12, 8, 6, 4, 3],
+          backgroundColor: '#0ca8ea'
+        }]
+      },
+      options: {
+        responsive: true,
+        indexAxis: 'y',
+        scales: {
+          x: { grid: { color: 'rgba(255,255,255,0.08)' }, ticks: { color: '#9aa5c5' }, beginAtZero: true },
+          y: { ticks: { color: '#9aa5c5' } }
+        },
+        plugins: { legend: { display: false } }
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1093 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Análisis de Riesgos · Incidentes</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      background: #090b10;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 32px;
+      background: #0f1620;
+      border-bottom: 1px solid #192133;
+    }
+    .page-header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+    .page-header p {
+      margin: 8px 0 0;
+      color: #9aa5c5;
+    }
+    .button-primary {
+      background: #f4a11b;
+      color: #0f1620;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 20px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .button-primary:hover {
+      background: #d68c12;
+    }
+    .secondary-button {
+      background: transparent;
+      color: #f4a11b;
+      border: 1px solid #f4a11b;
+      border-radius: 8px;
+      padding: 12px 20px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .secondary-button:hover {
+      background: rgba(244,161,27,0.12);
+    }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      padding: 24px 32px;
+    }
+    .summary-card {
+      background: #101827;
+      border: 1px solid #1f2a45;
+      border-radius: 16px;
+      padding: 22px;
+      min-height: 120px;
+    }
+    .summary-card h3 {
+      margin: 0;
+      font-size: 13px;
+      color: #9aa5c5;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .summary-card .value {
+      font-size: 36px;
+      margin: 14px 0 0;
+      color: #fff;
+      font-weight: 700;
+    }
+    .content {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      padding: 0 32px 32px;
+    }
+    .content .card-panel {
+      display: none;
+    }
+    .content aside {
+      display: none;
+    }
+    .card-panel {
+      background: #0f1620;
+      border: 1px solid #192133;
+      border-radius: 18px;
+      padding: 24px;
+    }
+    .card-panel h2 {
+      margin: 0 0 16px;
+      font-size: 20px;
+      color: #fff;
+    }
+    .card-panel form {
+      display: grid;
+      gap: 14px;
+    }
+    .card-panel label {
+      color: #9aa5c5;
+      font-size: 14px;
+    }
+    .card-panel input,
+    .card-panel select,
+    .card-panel textarea {
+      width: 100%;
+      background: #101827;
+      border: 1px solid #1f2a45;
+      border-radius: 10px;
+      color: #fff;
+      padding: 12px 14px;
+      font-size: 14px;
+    }
+    .card-panel textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+    .actions-list {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .action-item {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 10px;
+      align-items: stretch;
+      margin-bottom: 10px;
+      padding: 12px;
+      background: #0d1321;
+      border-radius: 8px;
+      border: 1px solid #192133;
+    }
+    .action-item input {
+      width: 100%;
+      background: #101827;
+      border: 1px solid #1f2a45;
+      border-radius: 10px;
+      color: #fff;
+      padding: 12px 14px;
+      font-size: 14px;
+    }
+    .action-item button {
+      background: #0d6efd;
+      border: none;
+      color: #fff;
+      border-radius: 10px;
+      padding: 12px 14px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .action-item button:hover {
+      background: #0b5ed7;
+    }
+    .detail-action-item {
+      padding: 14px;
+      background: #0d1321;
+      border: 1px solid #192133;
+      border-radius: 14px;
+      display: grid;
+      gap: 8px;
+    }
+    .detail-action-item strong {
+      display: block;
+      color: #9aa5c5;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .detail-action-item span {
+      color: #d1d9f4;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .action-link {
+      color: #f4a11b;
+      text-decoration: none;
+      font-weight: 700;
+      word-break: break-word;
+    }
+    .action-link:hover {
+      text-decoration: underline;
+    }
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+    }
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    #simulationOutput {
+      min-height: 220px;
+      border: 1px solid #192133;
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #090f1f;
+    }
+    .sim-placeholder {
+      color: #9aa5c5;
+      text-align: center;
+      line-height: 1.6;
+    }
+    .simulation-card {
+      display: grid;
+      gap: 16px;
+      width: 100%;
+    }
+    .video-preview {
+      position: relative;
+      height: 180px;
+      background: linear-gradient(135deg, #101827 0%, #192b48 100%);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .signal-bar {
+      width: 12px;
+      height: 40px;
+      background: #f4a11b;
+      border-radius: 999px;
+      animation: pulse 1.2s infinite ease-in-out;
+    }
+    .play-overlay {
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+      background: rgba(0,0,0,0.45);
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+    }
+    .simulation-text {
+      color: #d1d9f4;
+      line-height: 1.5;
+    }
+    .simulation-text strong {
+      display: block;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scaleY(0.9); }
+      50% { transform: scaleY(1.4); }
+    }
+    .record-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 18px;
+    }
+    .record-table th,
+    .record-table td {
+      padding: 14px 12px;
+      text-align: left;
+      border-bottom: 1px solid #192133;
+      color: #d1d9f4;
+      font-size: 13px;
+    }
+    .record-table thead th {
+      color: #9aa5c5;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+      background: rgba(15, 22, 32, 0.5);
+      position: sticky;
+      top: 0;
+    }
+    .record-table tbody tr:hover {
+      background: rgba(255,255,255,0.04);
+    }
+    .record-table td {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .status-chip {
+      display: inline-flex;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .status-chip.warning {
+      background: rgba(244,161,27,0.15);
+      color: #f4a11b;
+    }
+    .status-chip.danger {
+      background: rgba(220,53,69,0.15);
+      color: #dc3545;
+    }
+    .status-chip.success {
+      background: rgba(25,135,84,0.15);
+      color: #19a35a;
+    }
+    .detail-link {
+      color: #f4a11b;
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .detail-link:hover {
+      text-decoration: underline;
+    }
+    .detail-panel {
+      display: none;
+      background: #101827;
+      border: 1px solid #192133;
+      border-radius: 18px;
+      padding: 24px;
+      margin: 0 32px 32px;
+    }
+    .detail-panel .detail-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .detail-panel .detail-row strong {
+      display: block;
+      color: #9aa5c5;
+      margin-bottom: 6px;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .detail-panel .detail-row span {
+      color: #d1d9f4;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .detail-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    @media (max-width: 1200px) {
+      .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 768px) {
+      .summary-grid {
+        grid-template-columns: 1fr;
+        padding: 16px 20px;
+      }
+      .content {
+        padding: 0 20px 20px;
+      }
+      .card-panel {
+        margin: 0 20px 20px !important;
+      }
+      .record-table th,
+      .record-table td {
+        padding: 10px 8px;
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body class="dashboard-shell">
+  <aside class="sidebar">
+    <div>
+      <div class="sidebar-brand">
+        <a href="inicio.html">
+          <img src="descarga.webp" alt="Logo">
+          <span>SIF</span>
+        </a>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html"><span class="nav-icon">📊</span>Dashboard</a>
+        <a href="incidentes.html" class="active"><span class="nav-icon">⚠️</span>Incidentes</a>
+        <a href="mapa.html"><span class="nav-icon">🗺️</span>Mapa</a>
+        <a href="auditorias.html"><span class="nav-icon">🔍</span>Auditorías</a>
+        <a href="cumplimiento.html"><span class="nav-icon">✅</span>Cumplimiento</a>
+        <a href="SIF.html"><span class="nav-icon">🛡️</span>SIF</a>
+      </nav>
+    </div>
+    <div class="sidebar-footer">
+      <div>v2.4.0</div>
+      <div>Live</div>
+    </div>
+  </aside>
+
+  <main class="dashboard-main">
+    <header class="topbar">
+      <div class="topbar-title">
+        <h1>Análisis de Riesgos · Incidentes</h1>
+        <p>Peligros potenciales, casi-accidentes, accidentes y primeros auxilios</p>
+      </div>
+      <div class="topbar-actions">
+        <button class="sidebar-toggle" onclick="document.body.classList.toggle('sidebar-collapsed')" title="Mostrar u ocultar menú">☰</button>
+        <div class="email-chip">📧 contacto@corporativo.com</div>
+        <button class="button-primary" onclick="toggleForm()">+ Reportar incidente</button>
+        <button class="icon-button small" title="Notificaciones">
+          <span class="notification-dot">5</span>🔔
+        </button>
+        <div class="user-widget small">
+          <img src="https://i.pravatar.cc/100?img=12" alt="John Doe">
+          <div>
+            <div class="user-name">John Doe</div>
+            <div class="user-role">HSE Manager</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="page-content">
+      <section class="page-surface">
+        <section class="summary-grid">
+    <div class="summary-card">
+      <h3>Peligro potencial</h3>
+      <div class="value" id="countPeligro">0</div>
+    </div>
+    <div class="summary-card">
+      <h3>Casi-accidente</h3>
+      <div class="value" id="countCasi">0</div>
+    </div>
+    <div class="summary-card">
+      <h3>Accidente</h3>
+      <div class="value" id="countAccidente">0</div>
+    </div>
+    <div class="summary-card">
+      <h3>Primeros auxilios</h3>
+      <div class="value" id="countAuxilios">0</div>
+    </div>
+    <div class="summary-card">
+      <h3>Lesionados totales</h3>
+      <div class="value" id="countLesionados">0</div>
+    </div>
+    <div class="summary-card">
+      <h3>Días perdidos</h3>
+      <div class="value" id="countDiasPerdidos">0</div>
+    </div>
+  </section>
+
+  <div class="content">
+    <div class="card-panel" id="reportPanel" style="display:none;">
+      <h2>Reportar nuevo incidente</h2>
+      <form id="incidentForm">
+        <div class="field-grid">
+          <div>
+            <label for="tipo">Tipo</label>
+            <select id="tipo" required>
+              <option value="Peligro potencial">Peligro potencial</option>
+              <option value="Casi-accidente">Casi-accidente</option>
+              <option value="Accidente">Accidente</option>
+              <option value="Primeros auxilios">Primeros auxilios</option>
+            </select>
+          </div>
+          <div>
+            <label for="area">Área</label>
+            <select id="area" required onchange="updateOperationOptions()">
+              <option value="">Selecciona un área</option>
+            </select>
+          </div>
+          <div>
+            <label for="operacion">Operación</label>
+            <select id="operacion" required>
+              <option value="">Selecciona una operación</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-grid">
+          <div>
+            <label for="fechaHora">Fecha y hora del incidente</label>
+            <input id="fechaHora" type="datetime-local" required>
+          </div>
+        </div>
+
+        <label for="descripcion">Descripción del evento</label>
+        <textarea id="descripcion" placeholder="Describe el evento" required></textarea>
+
+        <label>Acciones inmediatas</label>
+        <div class="actions-list" id="actionsList"></div>
+        <button type="button" class="secondary-button" style="width:auto; max-width: 220px;" onclick="addActionInput()">+ Agregar acción</button>
+
+        <label for="causaRaiz">Causa raíz (si se identifica)</label>
+        <textarea id="causaRaiz" placeholder="Causa raíz" required></textarea>
+
+        <div class="field-grid">
+          <div>
+            <label for="estadoAccion">Estado de la acción</label>
+            <select id="estadoAccion" required>
+              <option value="Abierta">Abierta</option>
+              <option value="En progreso">En progreso</option>
+              <option value="Cerrada">Cerrada</option>
+            </select>
+          </div>
+          <div>
+            <label for="fechaCompromisoCierre">Fecha compromiso cierre</label>
+            <input id="fechaCompromisoCierre" type="datetime-local" required>
+          </div>
+        </div>
+
+        <div class="field-grid">
+          <div>
+            <label for="severidad">Severidad (1-5)</label>
+            <input id="severidad" type="number" min="1" max="5" value="2" required>
+          </div>
+          <div>
+            <label for="lesionados">Lesionados</label>
+            <input id="lesionados" type="number" min="0" value="0" required>
+          </div>
+          <div>
+            <label for="diasPerdidos">Días perdidos</label>
+            <input id="diasPerdidos" type="number" min="0" value="0" required>
+          </div>
+          <div>
+            <label for="parteAfectada">Parte afectada</label>
+            <select id="parteAfectada" required>
+              <option value="">Selecciona parte del cuerpo</option>
+              <option value="Cabeza">Cabeza</option>
+              <option value="Cuello">Cuello</option>
+              <option value="Hombro">Hombro</option>
+              <option value="Brazo">Brazo</option>
+              <option value="Codo">Codo</option>
+              <option value="Muñeca">Muñeca</option>
+              <option value="Mano">Mano</option>
+              <option value="Dedos">Dedos</option>
+              <option value="Torso">Torso</option>
+              <option value="Espalda">Espalda</option>
+              <option value="Cadera">Cadera</option>
+              <option value="Pierna">Pierna</option>
+              <option value="Rodilla">Rodilla</option>
+              <option value="Tobillo">Tobillo</option>
+              <option value="Pie">Pie</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </div>
+        </div>
+
+        <label for="fotografias">Fotografías</label>
+        <input id="fotografias" type="file" accept="image/*" multiple>
+
+        <div class="form-actions">
+          <button type="button" class="secondary-button" onclick="generateSimulation()">Generar simulación IA</button>
+          <button type="submit" class="button-primary">Registrar incidente</button>
+        </div>
+      </form>
+
+      <div class="simulation-section" style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #192133;">
+        <h3 style="margin-bottom: 16px; color: #fff;">Simulación IA</h3>
+        <div id="simulationOutput" class="simulation-output">
+          <div class="sim-placeholder">
+            <p>Presiona <strong>Generar simulación IA</strong> para crear un video o GIF basado en la descripción y la imagen.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <aside>
+      <div class="card-panel">
+        <h2>Estadísticas</h2>
+        <div class="summary-grid" style="padding: 0;">
+          <div class="summary-card">
+            <h3>Registros Totales</h3>
+            <div class="value" id="totalRecords">0</div>
+          </div>
+          <div class="summary-card">
+            <h3>Último incidente</h3>
+            <div class="value" id="lastIncident">-</div>
+          </div>
+          <div class="summary-card">
+            <h3>Acciones abiertas</h3>
+            <div class="value" id="countOpenActions">0</div>
+          </div>
+          <div class="summary-card">
+            <h3>Acciones cerradas</h3>
+            <div class="value" id="countClosedActions">0</div>
+          </div>
+          <div class="summary-card">
+            <h3>Cierres a tiempo</h3>
+            <div class="value" id="countOnTime">0</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+    </div>
+  </section>
+  </section>
+  </main>
+
+  <section class="card-panel" style="margin: 0 32px 32px;">
+    <h2>Registro de incidentes</h2>
+    <table class="record-table">
+      <thead>
+        <tr>
+          <th>TIPO</th>
+          <th>DESCRIPCIÓN</th>
+          <th>ÁREA</th>
+          <th>RESPONSABLE</th>
+          <th>FECHA</th>
+          <th>ESTADO ACCIÓN</th>
+          <th>DETALLE</th>
+          <th>SEV.</th>
+          <th>ACCIÓN</th>
+        </tr>
+      </thead>
+      <tbody id="recordBody"></tbody>
+    </table>
+  </section>
+
+  <section class="card-panel detail-panel" id="detailPanel">
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+      <div>
+        <h2>Detalle del incidente</h2>
+        <p id="detailSubtitle" style="margin:0;color:#9aa5c5;font-size:14px;"></p>
+      </div>
+      <button class="secondary-button" onclick="closeDetail()">Cerrar</button>
+    </div>
+    <div id="detailContent"></div>
+  </section>
+
+  <script>
+    const storageKey = 'incidentRecords';
+    const areasKey = 'riskAreas';
+    const operationsKey = 'riskOperations';
+    let records = JSON.parse(localStorage.getItem(storageKey)) || [];
+    let areas = JSON.parse(localStorage.getItem(areasKey)) || [];
+    let operations = JSON.parse(localStorage.getItem(operationsKey)) || [];
+
+    document.getElementById('incidentForm').addEventListener('submit', saveIncident);
+    loadFormOptions();
+    initActionInputs();
+
+    function loadFormOptions() {
+      const areaSelect = document.getElementById('area');
+      areaSelect.innerHTML = '<option value="">Selecciona un área</option>';
+      areas.forEach(area => {
+        const option = document.createElement('option');
+        option.value = area.id;
+        option.textContent = area.name;
+        areaSelect.appendChild(option);
+      });
+    }
+
+    function updateOperationOptions() {
+      const areaId = document.getElementById('area').value;
+      const operacionSelect = document.getElementById('operacion');
+      operacionSelect.innerHTML = '<option value="">Selecciona una operación</option>';
+      if (!areaId) return;
+      const areaOps = operations.filter(op => op.areaId === areaId);
+      areaOps.forEach(op => {
+        const option = document.createElement('option');
+        option.value = op.id;
+        option.textContent = op.name;
+        operacionSelect.appendChild(option);
+      });
+    }
+
+    function initActionInputs() {
+      const actionsList = document.getElementById('actionsList');
+      if (!actionsList) return;
+      actionsList.innerHTML = '';
+      addActionInput();
+    }
+
+    function addActionInput(value = '', responsable = '') {
+      const actionsList = document.getElementById('actionsList');
+      const wrapper = document.createElement('div');
+      wrapper.className = 'action-item';
+
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.placeholder = 'Describe la acción inmediata';
+      input.value = value;
+      input.required = true;
+
+      const responsableInput = document.createElement('input');
+      responsableInput.type = 'text';
+      responsableInput.placeholder = 'Responsable de la acción';
+      responsableInput.value = responsable;
+      responsableInput.required = true;
+
+      const removeButton = document.createElement('button');
+      removeButton.type = 'button';
+      removeButton.textContent = 'Eliminar';
+      removeButton.onclick = () => {
+        wrapper.remove();
+        if (!actionsList.querySelector('.action-item')) {
+          addActionInput();
+        }
+      };
+
+      wrapper.appendChild(input);
+      wrapper.appendChild(responsableInput);
+      wrapper.appendChild(removeButton);
+      actionsList.appendChild(wrapper);
+    }
+
+    function collectActionsFromForm() {
+      const actionItems = Array.from(document.querySelectorAll('.action-item'));
+      const baseUrl = window.location.href.split('#')[0];
+      return actionItems
+        .map((item, index) => {
+          const inputs = item.querySelectorAll('input');
+          const description = inputs[0].value.trim();
+          const responsable = inputs[1].value.trim();
+          if (!description || !responsable) return null;
+          const id = `act_${Date.now()}_${index}_${Math.random().toString(36).slice(2, 8)}`;
+          return {
+            id,
+            description,
+            responsable,
+            link: `${baseUrl}#accion-${id}`
+          };
+        })
+        .filter(Boolean);
+    }
+
+    function generateActionLink(record, action) {
+      const baseUrl = window.location.href.split('#')[0];
+      const params = new URLSearchParams({
+        id: record.id,
+        actionId: action.id,
+        tipo: record.tipo,
+        area: record.area,
+        descripcion: record.descripcion,
+        accion: action.description,
+        responsable: action.responsable,
+        fecha: record.fechaHora,
+        severidad: record.severidad,
+        parteAfectada: record.parteAfectada
+      });
+      return `${baseUrl}#${params.toString()}`;
+    }
+
+    function openActionFromLink(recordId, actionId) {
+      // Check if there's URL parameters for direct action link
+      const urlParams = new URLSearchParams(window.location.hash.substring(1));
+      if (urlParams.has('id') && urlParams.has('actionId')) {
+        recordId = urlParams.get('id');
+        actionId = urlParams.get('actionId');
+      }
+
+      openDetail(recordId);
+      setTimeout(() => {
+        const actionElement = document.getElementById(`action-${actionId}`);
+        if (actionElement) {
+          actionElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          actionElement.style.background = 'rgba(244,161,27,0.14)';
+          setTimeout(() => {
+            actionElement.style.background = '';
+          }, 2500);
+        }
+      }, 300);
+    }
+
+    function toggleForm() {
+      const panel = document.getElementById('reportPanel');
+      panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+      if (panel.style.display === 'block') {
+        document.getElementById('fechaHora').value = new Date().toISOString().slice(0,16);
+        document.getElementById('fechaCompromisoCierre').value = new Date().toISOString().slice(0,16);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    async function saveIncident(event) {
+      event.preventDefault();
+      const incident = await buildIncidentRecord();
+      if (!incident) return;
+      records.unshift(incident);
+      localStorage.setItem(storageKey, JSON.stringify(records));
+      renderPage();
+      document.getElementById('incidentForm').reset();
+      initActionInputs();
+      document.getElementById('fechaHora').value = new Date().toISOString().slice(0,16);
+      loadFormOptions();
+      updateOperationOptions();
+    }
+
+    async function buildIncidentRecord() {
+      const tipo = document.getElementById('tipo').value;
+      const areaId = document.getElementById('area').value;
+      const operationId = document.getElementById('operacion').value;
+      const area = areas.find(a => a.id === areaId)?.name || 'Sin asignar';
+      const fechaHora = document.getElementById('fechaHora').value;
+      const descripcion = document.getElementById('descripcion').value.trim();
+      const actionsList = collectActionsFromForm();
+      const causaRaiz = document.getElementById('causaRaiz').value.trim();
+      const estadoAccion = document.getElementById('estadoAccion').value;
+      const fechaCompromisoCierre = document.getElementById('fechaCompromisoCierre').value;
+      const severidad = parseInt(document.getElementById('severidad').value, 10);
+      const lesionados = parseInt(document.getElementById('lesionados').value, 10);
+      const diasPerdidos = parseInt(document.getElementById('diasPerdidos').value, 10);
+      const parteAfectada = document.getElementById('parteAfectada').value;
+      const fotos = document.getElementById('fotografias').files;
+
+      if (!areaId || !operationId || !fechaHora || !descripcion || !actionsList.length || !causaRaiz || !parteAfectada || !fechaCompromisoCierre) {
+        alert('Completa todos los campos obligatorios antes de registrar.');
+        return null;
+      }
+
+      const fotoData = await readFilesAsDataUrls(fotos);
+      const accionesText = actionsList.map(action => action.description).join(' | ');
+
+      return {
+        id: `inc_${Date.now()}`,
+        tipo,
+        areaId,
+        area,
+        operationId,
+        fechaHora,
+        descripcion,
+        acciones: accionesText,
+        accionesList,
+        causaRaiz,
+        severidad,
+        lesionados,
+        diasPerdidos,
+        parteAfectada,
+        fotos: fotoData,
+        estadoAccion,
+        fechaCompromisoCierre,
+        cierreResponsable: '',
+        cierreFecha: '',
+        solucion: '',
+        createdAt: new Date().toISOString()
+      };
+    }
+
+    function readFilesAsDataUrls(files) {
+      const promises = Array.from(files).map(file => new Promise(resolve => {
+        const reader = new FileReader();
+        reader.onload = () => resolve({ name: file.name, type: file.type, data: reader.result });
+        reader.onerror = () => resolve(null);
+        reader.readAsDataURL(file);
+      }));
+      return Promise.all(promises);
+    }
+
+    function generateSimulation() {
+      const descripcion = document.getElementById('descripcion').value.trim();
+      const fotos = document.getElementById('fotografias').files;
+      const tipo = document.getElementById('tipo').value;
+
+      const output = document.getElementById('simulationOutput');
+      const imageName = fotos.length ? fotos[0].name : 'sin imagen';
+      const prompt = descripcion ? descripcion : 'Descripción no proporcionada';
+
+      output.innerHTML = `
+        <div class="simulation-card">
+          <div class="video-preview">
+            <div class="signal-bar"></div>
+            <div class="signal-bar"></div>
+            <div class="signal-bar"></div>
+            <div class="play-overlay">GIF</div>
+          </div>
+          <div class="simulation-text">
+            <strong>Simulación IA generada</strong>
+            <p>Tipo: ${tipo}</p>
+            <p>${prompt.substring(0, 80)}${prompt.length > 80 ? '...' : ''}</p>
+            <p><em>Imagen usada:</em> ${imageName}</p>
+          </div>
+        </div>
+      `;
+
+      animateSimulationPreview();
+    }
+
+    function animateSimulationPreview() {
+      const bars = document.querySelectorAll('.signal-bar');
+      let phase = 0;
+      if (window.simulationInterval) clearInterval(window.simulationInterval);
+      window.simulationInterval = setInterval(() => {
+        bars.forEach((bar, index) => {
+          const height = 20 + Math.abs(Math.sin(phase + index * 0.8)) * 40;
+          bar.style.height = `${height}px`;
+        });
+        phase += 0.2;
+      }, 120);
+    }
+
+    function renderPage() {
+      areas = JSON.parse(localStorage.getItem(areasKey)) || [];
+      operations = JSON.parse(localStorage.getItem(operationsKey)) || [];
+      loadFormOptions();
+      renderSummary();
+      renderTable();
+    }
+
+    function renderSummary() {
+      const counts = {
+        'Peligro potencial': 0,
+        'Casi-accidente': 0,
+        'Accidente': 0,
+        'Primeros auxilios': 0
+      };
+      let lesionados = 0;
+      let diasPerdidos = 0;
+      let lastDate = '-';
+      let openActions = 0;
+      let closedActions = 0;
+      let onTimeClosures = 0;
+
+      records.forEach(item => {
+        counts[item.tipo] = (counts[item.tipo] || 0) + 1;
+        lesionados += item.lesionados || 0;
+        diasPerdidos += item.diasPerdidos || 0;
+        lastDate = item.fechaHora || lastDate;
+        if (item.estadoAccion === 'Cerrada') {
+          closedActions += 1;
+          if (item.fechaCompromisoCierre && item.cierreFecha && new Date(item.cierreFecha) <= new Date(item.fechaCompromisoCierre)) {
+            onTimeClosures += 1;
+          }
+        } else {
+          openActions += 1;
+        }
+      });
+
+      document.getElementById('countPeligro').textContent = counts['Peligro potencial'];
+      document.getElementById('countCasi').textContent = counts['Casi-accidente'];
+      document.getElementById('countAccidente').textContent = counts['Accidente'];
+      document.getElementById('countAuxilios').textContent = counts['Primeros auxilios'];
+      document.getElementById('countLesionados').textContent = lesionados;
+      document.getElementById('countDiasPerdidos').textContent = diasPerdidos;
+      document.getElementById('totalRecords').textContent = records.length;
+      document.getElementById('countOpenActions').textContent = openActions;
+      document.getElementById('countClosedActions').textContent = closedActions;
+      document.getElementById('countOnTime').textContent = onTimeClosures;
+      document.getElementById('lastIncident').textContent = lastDate ? new Date(lastDate).toLocaleString('es-ES') : '-';
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('recordBody');
+      tbody.innerHTML = '';
+      records.slice(0, 50).forEach(record => {
+        const statusClass = record.estadoAccion === 'Cerrada' ? 'success' : record.estadoAccion === 'En progreso' ? 'warning' : 'danger';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><span class="status-chip ${record.tipo === 'Accidente' ? 'danger' : record.tipo === 'Casi-accidente' ? 'warning' : 'success'}">${record.tipo}</span></td>
+          <td>${record.descripcion.length > 70 ? record.descripcion.slice(0, 70) + '...' : record.descripcion}</td>
+          <td>${record.area}</td>
+          <td>${record.accionesList && record.accionesList.length > 0 ? record.accionesList[0].responsable : 'Sin asignar'}</td>
+          <td>${new Date(record.fechaHora).toLocaleString('es-ES')}</td>
+          <td><span class="status-chip ${statusClass}">${record.estadoAccion}</span></td>
+          <td><a href="#" class="detail-link" onclick="openDetail('${record.id}'); return false;">Ver</a></td>
+          <td>${record.severidad}/5</td>
+          <td><button class="secondary-button" style="padding:6px 12px;font-size:12px;" onclick="deleteIncident('${record.id}')">Eliminar</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function deleteIncident(id) {
+      const record = records.find(item => item.id === id);
+      if (!record) return;
+      if (!confirm(`¿Estás seguro de que deseas eliminar el incidente "${record.descripcion.substring(0, 50)}..."?`)) {
+        return;
+      }
+      records = records.filter(item => item.id !== id);
+      localStorage.setItem(storageKey, JSON.stringify(records));
+      renderPage();
+    }
+
+    function openDetail(id) {
+      const record = records.find(item => item.id === id);
+      if (!record) return;
+      document.getElementById('detailSubtitle').textContent = `${record.tipo} • ${record.area} • ${new Date(record.fechaHora).toLocaleString('es-ES')}`;
+      document.getElementById('detailContent').innerHTML = buildDetailHtml(record);
+      document.getElementById('detailPanel').style.display = 'block';
+      document.getElementById('detailPanel').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function closeDetail() {
+      document.getElementById('detailPanel').style.display = 'none';
+    }
+
+    function saveClosure(event, id) {
+      event.preventDefault();
+      const record = records.find(item => item.id === id);
+      if (!record) return;
+
+      const estadoAccion = document.getElementById('closureStatus').value;
+      const cierreResponsable = document.getElementById('closureResponsable').value.trim();
+      const cierreFecha = document.getElementById('closureFecha').value;
+      const solucion = document.getElementById('closureSolucion').value.trim();
+
+      if (!cierreResponsable || !cierreFecha || !solucion) {
+        alert('Completa todos los campos de cierre antes de guardar.');
+        return;
+      }
+
+      record.estadoAccion = estadoAccion;
+      record.cierreResponsable = cierreResponsable;
+      record.cierreFecha = cierreFecha;
+      record.solucion = solucion;
+      localStorage.setItem(storageKey, JSON.stringify(records));
+      renderPage();
+      openDetail(id);
+    }
+
+    function buildDetailHtml(record) {
+      const photosHtml = record.fotos && record.fotos.length
+        ? record.fotos.map(f => `<img src="${f.data}" alt="${f.name}" style="max-width:120px;border-radius:12px;border:1px solid #192133;margin-right:10px;margin-bottom:10px;">`).join('')
+        : '<span style="color:#9aa5c5;">No hay fotografías</span>';
+
+      return `
+        <div class="detail-row">
+          <div><strong>Tipo</strong><span>${record.tipo}</span></div>
+          <div><strong>Área</strong><span>${record.area}</span></div>
+          <div><strong>Fecha incidente</strong><span>${new Date(record.fechaHora).toLocaleString('es-ES')}</span></div>
+          <div><strong>Estado acción</strong><span>${record.estadoAccion}</span></div>
+          <div><strong>Compromiso cierre</strong><span>${record.fechaCompromisoCierre ? new Date(record.fechaCompromisoCierre).toLocaleString('es-ES') : '-'}</span></div>
+          <div style="grid-column: 1 / -1;"><strong>Descripción</strong><span>${record.descripcion}</span></div>
+          <div style="grid-column: 1 / -1;">
+            <strong>Acciones inmediatas</strong>
+            ${record.accionesList && record.accionesList.length ? record.accionesList.map((action, idx) => `
+              <div id="action-${action.id}" class="detail-action-item">
+                <strong>Acción ${idx + 1}</strong>
+                <span>${action.description}</span>
+                <div style="margin-top: 6px;"><strong>Responsable:</strong> ${action.responsable}</div>
+                <a href="${generateActionLink(record, action)}" class="action-link" onclick="openActionFromLink('${record.id}','${action.id}'); return false;">Enlace acción</a>
+              </div>
+            `).join('') : `<span>${record.acciones || 'No hay acciones registradas'}</span>`}
+          </div>
+          <div style="grid-column: 1 / -1;"><strong>Causa raíz</strong><span>${record.causaRaiz}</span></div>
+          <div><strong>Severidad</strong><span>${record.severidad}/5</span></div>
+          <div><strong>Lesionados</strong><span>${record.lesionados}</span></div>
+          <div><strong>Días perdidos</strong><span>${record.diasPerdidos}</span></div>
+          <div><strong>Parte afectada</strong><span>${record.parteAfectada}</span></div>
+          <div style="grid-column: 1 / -1;"><strong>Fotografías</strong><span>${photosHtml}</span></div>
+        </div>
+        <div class="detail-row" style="grid-column: 1 / -1;">
+          <div style="grid-column: 1 / -1;">
+            <strong>Estatus de la acción</strong><span>${record.estadoAccion}</span>
+          </div>
+          ${record.estadoAccion === 'Cerrada' ? `
+            <div><strong>Responsable cierre</strong><span>${record.cierreResponsable || '-'}</span></div>
+            <div><strong>Fecha de cierre</strong><span>${record.cierreFecha ? new Date(record.cierreFecha).toLocaleString('es-ES') : '-'}</span></div>
+            <div style="grid-column: 1 / -1;"><strong>Solución</strong><span>${record.solucion || '-'}</span></div>
+          ` : `
+            <form id="closureForm" onsubmit="saveClosure(event, '${record.id}')">
+              <div class="field-grid">
+                <div>
+                  <label for="closureStatus">Nuevo estado de la acción</label>
+                  <select id="closureStatus" required>
+                    <option value="Abierta" ${record.estadoAccion === 'Abierta' ? 'selected' : ''}>Abierta</option>
+                    <option value="En progreso" ${record.estadoAccion === 'En progreso' ? 'selected' : ''}>En progreso</option>
+                    <option value="Cerrada" ${record.estadoAccion === 'Cerrada' ? 'selected' : ''}>Cerrada</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="closureResponsable">Cierra acción</label>
+                  <input id="closureResponsable" type="text" value="${record.cierreResponsable || ''}" placeholder="Nombre de quien cierra" required>
+                </div>
+                <div>
+                  <label for="closureFecha">Fecha cierre</label>
+                  <input id="closureFecha" type="datetime-local" value="${record.cierreFecha || ''}" required>
+                </div>
+                <div style="grid-column: 1 / -1;">
+                  <label for="closureSolucion">Solución entregada</label>
+                  <textarea id="closureSolucion" placeholder="Describe la solución" required>${record.solucion || ''}</textarea>
+                </div>
+              </div>
+              <div class="detail-actions">
+                <button type="submit" class="button-primary">Guardar cierre</button>
+                <button type="button" class="secondary-button" onclick="closeDetail()">Cancelar</button>
+              </div>
+            </form>
+          `}
+        </div>
+      `;
+    }
+
+    renderPage();
+  </script>
+</body>
+</html>

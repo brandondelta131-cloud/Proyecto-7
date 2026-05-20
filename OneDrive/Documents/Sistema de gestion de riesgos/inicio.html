@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema Integral de Gestión de Riesgos</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dark-theme">
+  <header class="global-header">
+    <div class="header-row top-email-row">
+      <div class="global-brand">
+        <a href="inicio.html">
+          <img src="descarga.webp" alt="Logo">
+          <span>Sistema Integral de Gestión de Riesgos</span>
+        </a>
+      </div>
+      <div class="topbar-actions">
+        <div class="email-chip">📧 contacto@corporativo.com</div>
+        <div class="user-widget small">
+          <img src="https://i.pravatar.cc/100?img=12" alt="John Doe">
+          <div>
+            <div class="user-name">John Doe</div>
+            <div class="user-role">HSE Manager</div>
+          </div>
+        </div>
+        <button class="nav-toggle" onclick="document.body.classList.toggle('nav-collapsed')" title="Mostrar u ocultar menú">☰</button>
+      </div>
+    </div>
+    <div class="header-row nav-row centered-nav">
+      <nav class="global-nav">
+        <a href="inicio.html" class="active">Inicio</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="incidentes.html">Incidentes</a>
+        <a href="mapa.html">Mapa</a>
+        <a href="auditorias.html">Auditorías</a>
+        <a href="cumplimiento.html">Cumplimiento</a>
+        <a href="SIF.html">SIF</a>
+      </nav>
+    </div>
+  </header>
+  <!-- HERO SECTION -->
+  <div class="hero-section">
+    <div class="hero-content">
+      <h1>Sistema Integral de Gestión de Riesgos</h1>
+      <p>Una plataforma unificada para gestión de riesgos, seguridad, salud ocupacional y cumplimiento normativo. Monitoriza, analiza y controla todos los aspectos de tu operación en tiempo real.</p>
+    </div>
+  </div>
+
+  <!-- STATS/KPI SECTION -->
+  <div class="stats-container">
+    <div class="stat-card">
+      <div class="stat-label">Días sin incidentes</div>
+      <div class="stat-number">25</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Incidentes registrados</div>
+      <div class="stat-number">12</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Auditorías completadas</div>
+      <div class="stat-number">8</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Acciones pendientes</div>
+      <div class="stat-number">5</div>
+    </div>
+  </div>
+
+  <!-- MODULES SECTION -->
+  <div class="modules-section">
+    <h2 class="section-title">Módulos Disponibles</h2>
+    
+    <div class="modules-container">
+      <a href="analisis.html" class="module-card">
+        <div class="icon">⚠️</div>
+        <h2>Análisis de Riesgos</h2>
+        <p>Incidentes, casi-accidentes, peligros potenciales y primeros auxilios con simulación AI.</p>
+      </a>
+
+      <a href="mapa.html" class="module-card">
+        <div class="icon">🗺️</div>
+        <h2>Mapa Dinámico Editable</h2>
+        <p>Sube el plano de tu planta, dibuja zonas, conecta el flujo de la celda y visualiza el heat map.</p>
+      </a>
+
+      <a href="auditorias.html" class="module-card">
+        <div class="icon">📋</div>
+        <h2>Auditorías ISO</h2>
+        <p>Checklist precargado para ISO 14001, 45001 y 50001 con captura de evidencia.</p>
+      </a>
+
+      <a href="cumplimiento.html" class="module-card">
+        <div class="icon">📑</div>
+        <h2>Cumplimiento NOM</h2>
+        <p>Verificación contra NOM-STPS y SEMARNAT con porcentaje y evidencia documental.</p>
+      </a>
+
+      <a href="dashboard.html" class="module-card">
+        <div class="icon">📊</div>
+        <h2>Dashboard KPIs</h2>
+        <p>Tiempo real con suscripciones a la base de datos, pirámide de Heinrich y tendencias.</p>
+      </a>
+
+      <a href="registro.html" class="module-card">
+        <div class="icon">📝</div>
+        <h2>Registro de Incidentes</h2>
+        <p>Documentación completa de incidentes con anexos, testigos y análisis de causa raíz.</p>
+      </a>
+
+      <a href="incidentes.html" class="module-card">
+        <div class="icon">🚨</div>
+        <h2>Seguimiento de Incidentes</h2>
+        <p>Monitoreo y trazabilidad de incidentes en tiempo real con notificaciones automáticas.</p>
+      </a>
+
+      <a href="acciones.html" class="module-card">
+        <div class="icon">✅</div>
+        <h2>Acciones Correctivas</h2>
+        <p>Hallazgos priorizados por severidad con responsable y fecha compromiso.</p>
+      </a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2026 Sistema Integral de Gestión de Riesgos. Todos los derechos reservados.</p>
+  </footer>
+
+  <script>
+    // Animación de contadores para los KPIs
+    document.querySelectorAll('.stat-number').forEach(element => {
+      const finalValue = parseInt(element.textContent);
+      let currentValue = 0;
+      const increment = Math.ceil(finalValue / 30);
+      
+      const counter = setInterval(() => {
+        currentValue += increment;
+        if (currentValue >= finalValue) {
+          element.textContent = finalValue;
+          clearInterval(counter);
+        } else {
+          element.textContent = currentValue;
+        }
+      }, 20);
+    });
+  </script>
+</body>
+</html>

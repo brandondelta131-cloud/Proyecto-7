@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Crear Cuenta - Sistema de Gestión de Riesgos</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .register-box {
+      max-width: 420px;
+      margin: 40px auto 20px;
+      text-align: center;
+    }
+    .page-intro {
+      color: #9aa5c5;
+      margin-bottom: 24px;
+      line-height: 1.7;
+    }
+  </style>
+</head>
+<body>
+  <header class="global-header">
+    <div class="header-row top-email-row">
+      <div class="global-brand">
+        <a href="inicio.html">
+          <img src="descarga.webp" alt="Logo">
+          <span>Sistema Integral de Gestión de Riesgos</span>
+        </a>
+      </div>
+      <div class="topbar-actions">
+        <div class="email-chip">📧 contacto@corporativo.com</div>
+        <div class="user-widget small">
+          <img src="https://i.pravatar.cc/100?img=12" alt="John Doe">
+          <div>
+            <div class="user-name">John Doe</div>
+            <div class="user-role">HSE Manager</div>
+          </div>
+        </div>
+        <button class="nav-toggle" onclick="document.body.classList.toggle('nav-collapsed')" title="Mostrar u ocultar menú">☰</button>
+      </div>
+    </div>
+    <div class="header-row nav-row centered-nav">
+      <nav class="global-nav">
+        <a href="inicio.html">Inicio</a>
+        <a href="index.html">Login</a>
+        <a href="registro.html" class="active">Registro</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-content">
+    <section class="page-surface register-box">
+      <h2>Crear Cuenta</h2>
+      <p class="page-intro">Registra tu acceso en el sistema con el mismo estilo oscuro profesional aplicado a todas las páginas.</p>
+      <form onsubmit="return registrarCuenta()">
+        <input type="email" id="regEmail" placeholder="Email" required>
+        <input type="password" id="regPassword" placeholder="Contraseña" required>
+        <select id="regRol" required>
+          <option value="">Selecciona tu rol</option>
+          <option value="auditor">Auditor</option>
+          <option value="operario">Operario</option>
+        </select>
+        <button type="submit" class="continue-btn">Registrar</button>
+      </form>
+      <button type="button" class="secondary-button" onclick="volver()">Volver al Login</button>
+    </section>
+  </main>
+
+  <script>
+    function registrarCuenta() {
+      const email = document.getElementById("regEmail").value;
+      const password = document.getElementById("regPassword").value;
+      const rol = document.getElementById("regRol").value;
+
+      if (email && password && rol) {
+        alert("Cuenta creada exitosamente para " + email + " como " + rol);
+        window.location.href = "index.html";
+      } else {
+        alert("Completa todos los campos");
+      }
+      return false;
+    }
+
+    function volver() {
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html></content>
+<parameter name="filePath">c:\Users\chand\OneDrive\Documents\Sistema de gestion de riesgos\registro.html

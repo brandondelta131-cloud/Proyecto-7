@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard - Sistema de Gestión</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(circle at top, rgba(12, 168, 234, 0.08), transparent 20%), #121212;
+      color: #fff;
+    }
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 20px;
+    }
+    .card {
+      background: #1e1e1e;
+      border: 1px solid #333;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+      width: 250px;
+      margin: 10px;
+      padding: 20px;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+    .card:hover {
+      transform: scale(1.05);
+    }
+    .card h2 {
+      margin: 0;
+      color: #0078D7;
+    }
+    .card p {
+      font-size: 18px;
+      margin-top: 10px;
+    }
+    .chart-container {
+      width: 45%;
+      margin: 20px;
+      background: #1e1e1e;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 20px;
+    }
+    .add-data {
+      text-align: center;
+      margin: 20px;
+    }
+    .add-data input, .add-data select, .add-data button {
+      margin: 5px;
+      padding: 8px;
+      border: none;
+      border-radius: 4px;
+    }
+    .add-data button {
+      background: #0078D7;
+      color: white;
+      cursor: pointer;
+    }
+    .add-data button:hover {
+      background: #005fa3;
+    }
+  </style>
+</head>
+<body class="dashboard-shell">
+  <aside class="sidebar">
+    <div>
+      <div class="sidebar-brand">
+        <a href="inicio.html" class="sidebar-brand-link">
+          <img src="descarga.webp" alt="Logo">
+          <div>
+            <span class="brand-label">SIF Analytics</span>
+            <strong>Safety Intelligence</strong>
+          </div>
+        </a>
+      </div>
+      <div class="sidebar-section">Panel</div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="active"><span class="nav-icon">📊</span>Dashboard</a>
+        <a href="analisis.html"><span class="nav-icon">📈</span>SIF Analysis</a>
+        <a href="incidentes.html"><span class="nav-icon">⚠️</span>Near Miss</a>
+        <a href="mapa.html"><span class="nav-icon">🗺️</span>Mapa</a>
+        <a href="auditorias.html"><span class="nav-icon">🔍</span>Auditorías</a>
+        <a href="cumplimiento.html"><span class="nav-icon">✅</span>Cumplimiento</a>
+        <a href="SIF.html"><span class="nav-icon">🛡️</span>SIF</a>
+        <a href="inicio.html"><span class="nav-icon">🏠</span>Inicio</a>
+      </nav>
+    </div>
+    <div class="sidebar-footer">
+      <div>v2.4.0</div>
+      <div>Live</div>
+    </div>
+  </aside>
+
+  <main class="dashboard-main">
+    <header class="topbar">
+      <div class="topbar-title">
+        <h1>Dashboard</h1>
+        <p>Visión rápida de rendimiento y actividades importantes.</p>
+      </div>
+      <div class="topbar-actions">
+        <div class="control-pill">
+          <span>Planta</span>
+          <select>
+            <option>Plant A</option>
+            <option>All Plants</option>
+          </select>
+        </div>
+        <button class="sidebar-toggle" onclick="document.body.classList.toggle('sidebar-collapsed')" title="Mostrar u ocultar menú">☰</button>
+        <div class="email-chip">📧 contacto@corporativo.com</div>
+        <button class="icon-button" title="Notificaciones">
+          <span class="notification-dot">5</span>
+          🔔
+        </button>
+        <div class="user-widget small">
+          <img src="https://i.pravatar.cc/100?img=12" alt="John Doe">
+          <div>
+            <div class="user-name">John Doe</div>
+            <div class="user-role">HSE Manager</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="card">
+        <h2>Incidentes</h2>
+        <p id="incidentes">0 este mes</p>
+      </div>
+      <div class="card">
+        <h2>Casi Accidentes</h2>
+        <p id="casiAccidentes">0 registrados</p>
+      </div>
+      <div class="card">
+        <h2>Primeros Auxilios</h2>
+        <p id="auxilios">0 casos</p>
+      </div>
+      <div class="card">
+        <h2>Cumplimiento ISO</h2>
+        <p id="cumplimiento">0%</p>
+      </div>
+      <div class="card">
+        <h2>Tiempo de Respuesta</h2>
+        <p id="respuesta">0 horas promedio</p>
+      </div>
+      <div class="card">
+        <h2>Lesionados Totales</h2>
+        <p id="lesionados">0</p>
+      </div>
+      <div class="card">
+        <h2>Días Perdidos</h2>
+        <p id="diasPerdidos">0</p>
+      </div>
+      <div class="card">
+        <h2>Acciones abiertas</h2>
+        <p id="openActions">0</p>
+      </div>
+      <div class="card">
+        <h2>Acciones cerradas</h2>
+        <p id="closedActions">0</p>
+      </div>
+      <div class="card">
+        <h2>Cierres a tiempo</h2>
+        <p id="onTimeClosures">0</p>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; justify-content: center;">
+      <div class="chart-container">
+        <canvas id="incidentesChart"></canvas>
+      </div>
+      <div class="chart-container">
+        <canvas id="heineChart"></canvas>
+      </div>
+    </div>
+
+    <script>
+      const recordsKey = 'incidentRecords';
+
+      const records = JSON.parse(localStorage.getItem(recordsKey)) || [];
+
+      function getTotals() {
+        return records.reduce((totals, item) => {
+          totals.incidentes += 1;
+          if (item.tipo === 'Casi-accidente') totals.casiAccidentes += 1;
+          if (item.tipo === 'Primeros auxilios') totals.auxilios += 1;
+          if (item.tipo === 'Accidente') totals.incidentesAccidente += 1;
+          totals.lesionados += item.tipo === 'Accidente' ? 1 : 0;
+          totals.diasPerdidos += item.diasPerdidos || 0;
+          totals.peligroPotencial += item.tipo === 'Peligro potencial' ? 1 : 0;
+          if (item.estadoAccion === 'Cerrada') {
+            totals.closedActions += 1;
+            if (item.fechaCompromisoCierre && item.cierreFecha && new Date(item.cierreFecha) <= new Date(item.fechaCompromisoCierre)) {
+              totals.onTimeClosures += 1;
+            }
+          } else {
+            totals.openActions += 1;
+          }
+          return totals;
+        }, {
+          incidentes: 0,
+          casiAccidentes: 0,
+          auxilios: 0,
+          cumplimiento: 0,
+          respuesta: 0,
+          encuestas: 0,
+          lesionados: 0,
+          diasPerdidos: 0,
+          peligroPotencial: 0,
+          incidentesAccidente: 0,
+          openActions: 0,
+          closedActions: 0,
+          onTimeClosures: 0
+        });
+      }
+
+      function getCumplimiento() {
+        if (!records.length) return 0;
+        const score = records.reduce((sum, item) => {
+          if (item.tipo === 'Accidente') return sum + 70;
+          if (item.tipo === 'Casi-accidente') return sum + 85;
+          if (item.tipo === 'Peligro potencial') return sum + 95;
+          if (item.tipo === 'Primeros auxilios') return sum + 90;
+          return sum;
+        }, 0);
+        return Math.min(100, Math.round(score / records.length));
+      }
+
+      function getTimeResponse() {
+        if (!records.length) return 0;
+        const total = records.reduce((sum, item) => sum + (item.severidad || 1) * 2, 0);
+        return (total / records.length).toFixed(1);
+      }
+
+      function getEncuestas() {
+        if (!records.length) return 0;
+        const total = records.reduce((sum, item) => sum + (100 - (item.severidad || 1) * 8), 0);
+        return Math.min(100, Math.round(total / records.length));
+      }
+
+      function updateDashboard() {
+        const totals = getTotals();
+        document.getElementById('incidentes').textContent = totals.incidentes + ' este mes';
+        document.getElementById('casiAccidentes').textContent = totals.casiAccidentes + ' registrados';
+        document.getElementById('auxilios').textContent = totals.auxilios + ' casos';
+        document.getElementById('cumplimiento').textContent = getCumplimiento() + '%';
+        document.getElementById('respuesta').textContent = getTimeResponse() + ' horas promedio';
+        document.getElementById('lesionados').textContent = totals.lesionados;
+        document.getElementById('diasPerdidos').textContent = totals.diasPerdidos;
+        document.getElementById('openActions').textContent = totals.openActions;
+        document.getElementById('closedActions').textContent = totals.closedActions;
+        document.getElementById('onTimeClosures').textContent = totals.onTimeClosures;
+
+        renderCharts(totals);
+      }
+
+      function renderCharts(totals) {
+        if (window.incidentesChart) window.incidentesChart.destroy();
+        if (window.heineChart) window.heineChart.destroy();
+
+        const ctx1 = document.getElementById('incidentesChart').getContext('2d');
+        window.incidentesChart = new Chart(ctx1, {
+          type: 'bar',
+          data: {
+            labels: ['Peligro potencial', 'Casi-accidente', 'Accidente', 'Primeros auxilios'],
+            datasets: [{
+              label: 'Registros',
+              data: [totals.peligroPotencial, totals.casiAccidentes, totals.incidentesAccidente, totals.auxilios],
+              backgroundColor: ['#f4a11b', '#ff6b6b', '#dc3545', '#19a35a'],
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { display: false },
+              tooltip: { callbacks: { label: ctx => `${ctx.parsed.y} registros` } }
+            },
+            scales: {
+              x: { ticks: { color: '#fff' }, grid: { color: '#333' } },
+              y: { ticks: { color: '#fff' }, grid: { color: '#333' }, beginAtZero: true }
+            }
+          }
+        });
+
+        const ctx2 = document.getElementById('heineChart').getContext('2d');
+        window.heineChart = new Chart(ctx2, {
+          type: 'horizontalBar',
+          data: {
+            labels: ['Primeros auxilios', 'Accidente', 'Casi-accidente', 'Peligro potencial'],
+            datasets: [{
+              label: 'Pirámide de Heinrich',
+              data: [totals.auxilios, totals.incidentesAccidente, totals.casiAccidentes, totals.peligroPotencial],
+              backgroundColor: ['#19a35a', '#dc3545', '#f4a11b', '#5a8dfa'],
+            }]
+          },
+          options: {
+            responsive: true,
+            indexAxis: 'y',
+            plugins: { legend: { display: false } },
+            scales: {
+              x: { ticks: { color: '#fff' }, grid: { color: '#333' } },
+              y: { ticks: { color: '#fff' }, grid: { color: '#333' } }
+            }
+          }
+        });
+      }
+
+      setInterval(updateDashboard, 30000);
+      updateDashboard();
+    </script>
+  </body>
+  </html>
